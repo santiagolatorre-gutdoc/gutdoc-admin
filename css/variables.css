@@ -1,0 +1,84 @@
+/* ================================================================
+   GUTDOC DESIGN SYSTEM
+   Manual de Marca: Azul Marino #183E6D, Azul Cian #0E9FCA,
+   Azul Medio #09759B, Índigo (GutClinic) #3A269F, Blanco
+   Tipografía: Stem Bold (titulares) → Archivo · JUST Sans (cuerpo) → Manrope
+================================================================ */
+:root {
+  /* Marca */
+  --c-marino:        #183E6D;
+  --c-marino-deep:   #0F2A4D;
+  --c-marino-soft:   #2C5489;
+  --c-cian:          #0E9FCA;
+  --c-cian-deep:     #0B7FA3;
+  --c-cian-soft:     #5BBEDB;
+  --c-medio:         #09759B;
+  --c-indigo:        #3A269F;
+  --c-blanco:        #FFFFFF;
+
+  /* Neutros calibrados (no grises planos genéricos) */
+  --c-bg:            #F4F7FB;
+  --c-bg-elevated:   #FFFFFF;
+  --c-border:        #E1E8F0;
+  --c-border-soft:   #EDF2F7;
+  --c-text:          #1A2942;
+  --c-text-muted:    #5C6B82;
+  --c-text-subtle:   #8B97AC;
+
+  /* Estados — calibrados para sentirse médicos, no festivos */
+  --s-pendiente-bg:  #F1F4F9;
+  --s-pendiente-fg:  #5C6B82;
+  --s-curso-bg:      #E3F4FB;
+  --s-curso-fg:      #0B7FA3;
+  --s-completa-bg:   #E4F3EC;
+  --s-completa-fg:   #1F7A4D;
+  --s-vencida-bg:    #FBE8E5;
+  --s-vencida-fg:    #9B2A1F;
+  --s-reprog-bg:     #FCF2DC;
+  --s-reprog-fg:     #8A5A0C;
+  --s-noaplica-bg:   #ECEEF1;
+  --s-noaplica-fg:   #98A2B3;
+  --s-desistida-bg:  #F4ECF7;
+  --s-desistida-fg:  #6B3F8A;
+
+  /* Tipografía */
+  --f-display: 'Archivo', system-ui, sans-serif;
+  --f-body:    'Manrope', system-ui, sans-serif;
+
+  /* Spacing rítmico */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px;
+
+  /* Radio y elevación */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px;
+  --el-1: 0 1px 2px rgba(24,62,109,.06), 0 1px 3px rgba(24,62,109,.04);
+  --el-2: 0 4px 12px rgba(24,62,109,.08), 0 2px 4px rgba(24,62,109,.04);
+  --el-3: 0 12px 32px rgba(24,62,109,.12), 0 4px 8px rgba(24,62,109,.06);
+
+  --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: var(--f-body);
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--c-marino);
+}
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+

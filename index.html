@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GutDoc Admin · Sistema de Gestión Médica</title>
+<meta name="description" content="Sistema administrativo GutClinic / GutDoc — gestión operativa de pacientes en programas metabólicos.">
+
+<!-- Preconnect a Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Tipografías cercanas al manual:
+     Manrope (cuerpo, JUST Sans alternative)
+     Archivo (titulares geométricos cercanos a Stem) -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Iconos Lucide -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<!-- Estilos modulares -->
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+
+<!-- ====================================================================
+     CONTENIDO DE LA APP (sidebar + topbar + screens + modales)
+==================================================================== -->
+
+<!-- ================================================================
+     APP SHELL
+================================================================ -->
+<div class="app">
+
+  <!-- =============== SIDEBAR =============== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <!-- ISOTIPO 4 hojas en versión BLANCA monocromática (manual de marca: aplicación sobre azul marino) -->
+      <svg class="brand-iso" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M48 5 C 48 25, 28 35, 8 45 C 20 25, 30 12, 48 5 Z" fill="#FFFFFF"/>
+        <path d="M52 5 C 52 25, 72 35, 92 45 C 80 25, 70 12, 52 5 Z" fill="#FFFFFF"/>
+        <path d="M48 95 C 48 75, 28 65, 8 55 C 20 75, 30 88, 48 95 Z" fill="#FFFFFF"/>
+        <path d="M52 95 C 52 75, 72 65, 92 55 C 80 75, 70 88, 52 95 Z" fill="#FFFFFF"/>
+      </svg>
+      <div>
+        <div class="brand-name">GutDoc</div>
+        <div class="brand-tagline">Salud Metabólica</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">Operación</div>
+    <ul class="sidebar-nav">
+      <li class="sidebar-item active" data-screen="dashboard">
+        <i data-lucide="layout-dashboard" class="icon"></i>
+        Dashboard
+      </li>
+      <li class="sidebar-item" data-screen="pacientes">
+        <i data-lucide="users" class="icon"></i>
+        Pacientes
+        <span class="badge">128</span>
+      </li>
+      <li class="sidebar-item" data-screen="admision">
+        <i data-lucide="user-plus" class="icon"></i>
+        Admisión
+      </li>
+      <li class="sidebar-item" data-screen="ciclo">
+        <i data-lucide="activity" class="icon"></i>
+        Ciclo de paciente
+      </li>
+      <li class="sidebar-item" data-screen="tareas">
+        <i data-lucide="check-square" class="icon"></i>
+        Tareas de hoy
+        <span class="badge">14</span>
+      </li>
+      <li class="sidebar-item" data-screen="mensajes">
+        <i data-lucide="message-square" class="icon"></i>
+        Mensajes
+        <span class="badge">9</span>
+      </li>
+      <li class="sidebar-item" data-screen="solicitudes-medicas">
+        <i data-lucide="file-plus" class="icon"></i>
+        Solicitudes Médicas
+        <span class="badge">5</span>
+      </li>
+
+      <div class="sidebar-section">Comercial</div>
+      <li class="sidebar-item" data-screen="comercial">
+        <i data-lucide="trending-up" class="icon"></i>
+        Seguimiento comercial
+      </li>
+
+      <div class="sidebar-section">Soporte</div>
+      <li class="sidebar-item" data-screen="incidencias">
+        <i data-lucide="alert-circle" class="icon"></i>
+        Incidencias
+        <span class="badge alert">3</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="user-avatar">SL</div>
+      <div class="user-info">
+        <div class="user-name">Dr. Santiago La Torre</div>
+        <div class="user-role">Médico Especialista</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =============== MAIN =============== -->
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" title="Menú">
+        <i data-lucide="menu" style="width:18px; height:18px;"></i>
+      </button>
+      <div class="breadcrumb"><span id="breadcrumb"><strong>Dashboard</strong></span></div>
+      <div class="search-input">
+        <i data-lucide="search" class="icon"></i>
+        <input type="text" placeholder="Buscar paciente, código, DNI…" />
+      </div>
+      <div class="topbar-actions">
+        <button class="sound-toggle" id="sound-toggle" title="Sonidos del sistema" style="color: var(--c-cian);">
+          <i data-lucide="volume-2" class="icon"></i>
+          <span id="sound-state">Sonidos ON</span>
+        </button>
+        <button class="icon-btn" title="Notificaciones">
+          <i data-lucide="bell" class="icon"></i>
+          <span class="dot"></span>
+        </button>
+        <button class="icon-btn" title="Ajustes">
+          <i data-lucide="settings" class="icon"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="demo-banner">
+        <i data-lucide="shield-check" style="width:14px;height:14px;"></i>
+        <strong style="color:var(--c-medio);">Maqueta de validación.</strong>
+        Datos ficticios. Vista de rol <strong style="color:var(--c-marino);">Administrador</strong> (acceso completo). En producción cada rol verá solo lo permitido.
+      </div>
+
+      <!-- ================================================================
+           PANTALLA 1 · DASHBOARD
+      ================================================================ -->
+      <section class="screen active" id="screen-dashboard">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Buen día, Santiago</h1>
+            <div class="subtitle">Lunes 4 de mayo · 14 tareas para hoy · 9 mensajes pendientes</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="download" class="icon"></i>Exportar día</button>
+            <button class="btn btn-primary"><i data-lucide="plus" class="icon"></i>Nuevo paciente</button>
+          </div>
+        </div>
+
+        <!-- KPIs principales -->
+        <div class="kpi-grid stagger">
+          <div class="kpi cian">
+            <div class="kpi-label"><i data-lucide="users" class="icon"></i>Pacientes activos</div>
+            <div class="kpi-value">128</div>
+            <div class="kpi-delta up"><i data-lucide="trending-up" class="icon" style="width:13px;height:13px;"></i>+6 este mes</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="calendar-check" class="icon"></i>Tareas de hoy</div>
+            <div class="kpi-value">14</div>
+            <div class="kpi-delta neutral">8 completadas · 6 pendientes</div>
+          </div>
+          <div class="kpi alert">
+            <div class="kpi-label"><i data-lucide="alert-triangle" class="icon"></i>Tareas vencidas</div>
+            <div class="kpi-value">3</div>
+            <div class="kpi-delta down">Requieren atención inmediata</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="message-square" class="icon"></i>Mensajes pendientes</div>
+            <div class="kpi-value">9</div>
+            <div class="kpi-delta neutral">7 educativos · 2 seguimientos LP</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="activity" class="icon"></i>Tasa respuesta paciente</div>
+            <div class="kpi-value">76<span class="unit">%</span></div>
+            <div class="kpi-delta up">+4% vs mes anterior</div>
+          </div>
+        </div>
+
+        <!-- Agenda + columna lateral -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="clock" class="icon"></i>Agenda de hoy</div>
+              <button class="btn btn-ghost btn-sm">Ver completa <i data-lucide="arrow-right" class="icon"></i></button>
+            </div>
+            <div class="card-body flush stagger">
+              <div class="agenda-row">
+                <div class="agenda-time">09:00</div>
+                <div class="agenda-bar done"></div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Inbody 3 · María González</div>
+                  <div class="agenda-meta">GLP-1 Sem 3 <span class="dot"></span> Téc. Aplicaciones <span class="dot"></span> GutClinic</div>
+                </div>
+                <div class="agenda-action"><span class="tag tag-completa">Completada</span></div>
+              </div>
+              <div class="agenda-row">
+                <div class="agenda-time">10:30</div>
+                <div class="agenda-bar done"></div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Aplicación 4 · Carlos Vega</div>
+                  <div class="agenda-meta">GLP-1 Sem 4 <span class="dot"></span> Téc. Aplicaciones <span class="dot"></span> GutClinic</div>
+                </div>
+                <div class="agenda-action"><span class="tag tag-completa">Completada</span></div>
+              </div>
+              <div class="agenda-row">
+                <div class="agenda-time">11:15</div>
+                <div class="agenda-bar"></div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Consulta Nutrición · Lucía Mendoza</div>
+                  <div class="agenda-meta">Combinado Sem 2 <span class="dot"></span> Lic. Patricia R. <span class="dot"></span> Virtual</div>
+                </div>
+                <div class="agenda-action"><button class="btn btn-cian btn-sm" data-complete>Marcar ✓</button></div>
+              </div>
+              <div class="agenda-row">
+                <div class="agenda-time">12:00</div>
+                <div class="agenda-bar"></div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Seguimiento 3 · Roberto Silva</div>
+                  <div class="agenda-meta">GLP-1 Sem 3 <span class="dot"></span> Seguimiento Médico <span class="dot"></span> Virtual</div>
+                </div>
+                <div class="agenda-action"><button class="btn btn-cian btn-sm" data-complete>Marcar ✓</button></div>
+              </div>
+              <div class="agenda-row">
+                <div class="agenda-time">14:30</div>
+                <div class="agenda-bar warn"></div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Foto Inicial · Diana Castro</div>
+                  <div class="agenda-meta">GLP-1 Sem 1 <span class="dot"></span> Téc. Aplicaciones <span class="dot"></span> Requiere evidencia</div>
+                </div>
+                <div class="agenda-action"><span class="tag tag-pendiente">Pendiente</span></div>
+              </div>
+              <div class="agenda-row">
+                <div class="agenda-time">16:00</div>
+                <div class="agenda-bar danger"></div>
+                <div class="agenda-content">
+                  <div class="agenda-title">Consulta Resultados · Andrés Fuentes</div>
+                  <div class="agenda-meta">GLP-1 Sem 10 <span class="dot"></span> Médico Especialista <span class="dot"></span> Decisión post-programa</div>
+                </div>
+                <div class="agenda-action"><span class="tag tag-vencida">Vencida 1d</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:var(--sp-5);">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i data-lucide="alert-circle" class="icon"></i>Incidencias abiertas</div>
+                <span class="tag tag-prioridad-alta">3 críticas</span>
+              </div>
+              <div class="card-body" style="padding:var(--sp-3);">
+                <div class="incident-card alta" style="margin:0 0 var(--sp-2) 0; padding:var(--sp-3); display:block;">
+                  <div class="incident-id">INC-00142</div>
+                  <div class="incident-title" style="font-size:13px;">Receta vencida · GLP-1</div>
+                  <div class="incident-meta"><span><i data-lucide="user" class="icon"></i>D. Castro</span></div>
+                </div>
+                <div class="incident-card media" style="margin:0 0 var(--sp-2) 0; padding:var(--sp-3); display:block;">
+                  <div class="incident-id">INC-00141</div>
+                  <div class="incident-title" style="font-size:13px;">No respondió mensaje sem 2</div>
+                  <div class="incident-meta"><span><i data-lucide="user" class="icon"></i>R. Silva</span></div>
+                </div>
+                <div class="incident-card baja" style="margin:0; padding:var(--sp-3); display:block;">
+                  <div class="incident-id">INC-00140</div>
+                  <div class="incident-title" style="font-size:13px;">Reagendar Inbody 5</div>
+                  <div class="incident-meta"><span><i data-lucide="user" class="icon"></i>L. Mendoza</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i data-lucide="user-x" class="icon"></i>Requieren contacto</div>
+              </div>
+              <div class="card-body" style="padding:var(--sp-3);">
+                <div style="display:flex; flex-direction:column; gap:var(--sp-2);">
+                  <div class="pac-cell" style="padding:var(--sp-2);">
+                    <div class="pac-avatar">JR</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name" style="font-size:13px;">Javier Ríos</span>
+                      <span class="cell-sub">Sin actividad · 18 días</span>
+                    </div>
+                  </div>
+                  <div class="pac-cell" style="padding:var(--sp-2);">
+                    <div class="pac-avatar">EM</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name" style="font-size:13px;">Elena Moreno</span>
+                      <span class="cell-sub">Seg. LP 6 meses · Vence en 3 días</span>
+                    </div>
+                  </div>
+                  <div class="pac-cell" style="padding:var(--sp-2);">
+                    <div class="pac-avatar">FT</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name" style="font-size:13px;">Federico Torres</span>
+                      <span class="cell-sub">No respondió · 2 mensajes</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="bar-chart-2" class="icon"></i>Cumplimiento por programa</div>
+            </div>
+            <div class="card-body">
+              <div style="display:flex; flex-direction:column; gap:var(--sp-3);">
+                <div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:12px; font-weight:600;">GLP-1 10 sem</span><span style="font-size:12px; color:var(--c-text-muted); font-weight:600;">87%</span></div>
+                  <div class="progress"><div class="progress-bar" style="width:87%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:12px; font-weight:600;">Combinado 16 sem</span><span style="font-size:12px; color:var(--c-text-muted); font-weight:600;">74%</span></div>
+                  <div class="progress"><div class="progress-bar" style="width:74%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:12px; font-weight:600;">Manga Gástrica</span><span style="font-size:12px; color:var(--c-text-muted); font-weight:600;">92%</span></div>
+                  <div class="progress"><div class="progress-bar" style="width:92%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="font-size:12px; font-weight:600;">Microdosificación</span><span style="font-size:12px; color:var(--c-text-muted); font-weight:600;">68%</span></div>
+                  <div class="progress"><div class="progress-bar warn" style="width:68%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="users" class="icon"></i>Pacientes por fase</div>
+            </div>
+            <div class="card-body">
+              <div style="display:flex; flex-direction:column; gap:var(--sp-3); font-size:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span><span class="tag tag-curso">Adaptación</span></span>
+                  <strong style="font-family:var(--f-display); font-size:18px;">42</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span><span class="tag tag-curso">Optimización</span></span>
+                  <strong style="font-family:var(--f-display); font-size:18px;">51</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span><span class="tag tag-completa">Consolidación</span></span>
+                  <strong style="font-family:var(--f-display); font-size:18px;">23</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span><span class="tag tag-pendiente">Post-alta / LP</span></span>
+                  <strong style="font-family:var(--f-display); font-size:18px;">12</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="check-circle-2" class="icon"></i>Cierres de ciclo</div>
+              <span class="tag tag-completa">Este mes</span>
+            </div>
+            <div class="card-body">
+              <div style="display:flex; flex-direction:column; gap:var(--sp-3);">
+                <div>
+                  <div style="font-size:11px; color:var(--c-text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:4px;">Ciclos cerrados</div>
+                  <div style="font-family:var(--f-display); font-size:28px; font-weight:800; color:var(--c-marino);">8 <span style="font-size:14px; color:#1F7A4D;">+2 vs mes ant.</span></div>
+                </div>
+                <div style="border-top: 1px solid var(--c-border-soft); padding-top: var(--sp-3);">
+                  <div style="font-size:11px; color:var(--c-text-muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:6px;">Decisiones tomadas</div>
+                  <div style="font-size: 12px; display:flex; flex-direction:column; gap:5px;">
+                    <div style="display:flex; justify-content:space-between;"><span>Microdosificación</span><strong>3</strong></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Nueva ronda</span><strong>2</strong></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Alta médica</span><strong>2</strong></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Seguimiento LP</span><strong>1</strong></div>
+                  </div>
+                </div>
+                <div style="border-top: 1px solid var(--c-border-soft); padding-top: var(--sp-3); display:flex; align-items:center; gap:8px; background:#FBE8E5; margin: 4px -20px -20px; padding: var(--sp-3) var(--sp-5); border-radius: 0 0 var(--r-lg) var(--r-lg);">
+                  <i data-lucide="alert-circle" class="icon" style="width:16px;height:16px;color:#9B2A1F;"></i>
+                  <div>
+                    <div style="font-weight:700; font-size:13px; color:#9B2A1F;">2 ciclos · Decisión pendiente</div>
+                    <div style="font-size:11px; color:#9B2A1F; opacity:0.8;">Sem 10 completada sin decisión</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA 2 · PACIENTES
+      ================================================================ -->
+      <section class="screen" id="screen-pacientes">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Pacientes</h1>
+            <div class="subtitle">128 activos · 14 prospectos · 8 en seguimiento comercial · 12 en seguimiento LP</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="filter" class="icon"></i>Filtros</button>
+            <button class="btn btn-secondary"><i data-lucide="download" class="icon"></i>Exportar</button>
+            <button class="btn btn-primary"><i data-lucide="user-plus" class="icon"></i>Nuevo paciente</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="filters">
+            <span class="chip active">Todos <span class="count">128</span></span>
+            <span class="chip">Activos <span class="count">98</span></span>
+            <span class="chip">En adaptación <span class="count">42</span></span>
+            <span class="chip">En optimización <span class="count">51</span></span>
+            <span class="chip">Consolidación <span class="count">23</span></span>
+            <span class="chip" style="border-color: rgba(155, 42, 31, 0.3); color: #9B2A1F;">Decisión pendiente <span class="count" style="background: #FBE8E5; color: #9B2A1F;">2</span></span>
+            <span class="chip">Pausados <span class="count">6</span></span>
+            <span class="chip">Completados <span class="count">12</span></span>
+            <span class="chip">Seg. LP <span class="count">12</span></span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Programa</th>
+                <th>Semana</th>
+                <th>Estado</th>
+                <th>Cumplimiento</th>
+                <th>Médico</th>
+                <th>Última actividad</th>
+              </tr>
+            </thead>
+            <tbody class="stagger">
+              <tr data-screen="ciclo">
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">MG</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name">María González</span>
+                      <span class="cell-sub">PAC-00042 · Ronda 2</span>
+                    </div>
+                  </div>
+                </td>
+                <td>GLP-1 Continuación · 10 sem</td>
+                <td><strong>3 / 10</strong></td>
+                <td><span class="tag tag-curso">En curso</span></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:var(--sp-2);">
+                    <div class="progress" style="width:80px;"><div class="progress-bar" style="width:91%"></div></div>
+                    <span style="font-size:11px; color:var(--c-text-muted);">91%</span>
+                  </div>
+                </td>
+                <td>Dr. La Torre</td>
+                <td><span style="font-size:12px; color:var(--c-text-subtle);">Hoy 09:00</span></td>
+              </tr>
+              <tr data-screen="ciclo">
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">CV</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name">Carlos Vega</span>
+                      <span class="cell-sub">PAC-00038 · Ronda 1</span>
+                    </div>
+                  </div>
+                </td>
+                <td>GLP-1 Inicio · 10 sem</td>
+                <td><strong>4 / 10</strong></td>
+                <td><span class="tag tag-curso">En curso</span></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:var(--sp-2);">
+                    <div class="progress" style="width:80px;"><div class="progress-bar" style="width:84%"></div></div>
+                    <span style="font-size:11px; color:var(--c-text-muted);">84%</span>
+                  </div>
+                </td>
+                <td>Dr. La Torre</td>
+                <td><span style="font-size:12px; color:var(--c-text-subtle);">Hoy 10:30</span></td>
+              </tr>
+              <tr data-screen="ciclo">
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">LM</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name">Lucía Mendoza</span>
+                      <span class="cell-sub">PAC-00056 · Ronda 1</span>
+                    </div>
+                  </div>
+                </td>
+                <td>Combinado · 16 sem</td>
+                <td><strong>2 / 16</strong></td>
+                <td><span class="tag tag-curso">En curso</span></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:var(--sp-2);">
+                    <div class="progress" style="width:80px;"><div class="progress-bar" style="width:75%"></div></div>
+                    <span style="font-size:11px; color:var(--c-text-muted);">75%</span>
+                  </div>
+                </td>
+                <td>Dr. La Torre</td>
+                <td><span style="font-size:12px; color:var(--c-text-subtle);">Hoy 11:15</span></td>
+              </tr>
+              <tr data-screen="ciclo">
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">AF</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name">Andrés Fuentes</span>
+                      <span class="cell-sub">PAC-00029 · Ronda 1</span>
+                    </div>
+                  </div>
+                </td>
+                <td>GLP-1 Inicio · 10 sem</td>
+                <td><strong>10 / 10</strong></td>
+                <td><span class="tag tag-vencida">Decisión pendiente</span></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:var(--sp-2);">
+                    <div class="progress" style="width:80px;"><div class="progress-bar" style="width:96%"></div></div>
+                    <span style="font-size:11px; color:var(--c-text-muted);">96%</span>
+                  </div>
+                </td>
+                <td>Dr. La Torre</td>
+                <td><span style="font-size:12px; color:#9B2A1F;">Vencida 1d</span></td>
+              </tr>
+              <tr data-screen="ciclo">
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">DC</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name">Diana Castro</span>
+                      <span class="cell-sub">PAC-00071 · Ronda 1</span>
+                    </div>
+                  </div>
+                </td>
+                <td>GLP-1 Inicio · 5 sem</td>
+                <td><strong>1 / 5</strong></td>
+                <td><span class="tag tag-curso">En curso</span></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:var(--sp-2);">
+                    <div class="progress" style="width:80px;"><div class="progress-bar" style="width:60%"></div></div>
+                    <span style="font-size:11px; color:var(--c-text-muted);">60%</span>
+                  </div>
+                </td>
+                <td>Dr. La Torre</td>
+                <td><span style="font-size:12px; color:var(--c-text-subtle);">Hoy 14:30</span></td>
+              </tr>
+              <tr data-screen="ciclo">
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">EM</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name">Elena Moreno</span>
+                      <span class="cell-sub">PAC-00012 · Post-alta</span>
+                    </div>
+                  </div>
+                </td>
+                <td>Seg. Largo Plazo</td>
+                <td><strong>—</strong></td>
+                <td><span class="tag tag-pendiente">Seg. 6 meses</span></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:var(--sp-2);">
+                    <div class="progress" style="width:80px;"><div class="progress-bar" style="width:100%"></div></div>
+                    <span style="font-size:11px; color:var(--c-text-muted);">100%</span>
+                  </div>
+                </td>
+                <td>Dr. La Torre</td>
+                <td><span style="font-size:12px; color:var(--c-text-subtle);">Hace 5 meses</span></td>
+              </tr>
+              <tr data-screen="ciclo">
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">RS</div>
+                    <div class="pac-cell-text">
+                      <span class="cell-name">Roberto Silva</span>
+                      <span class="cell-sub">PAC-00064 · Ronda 1</span>
+                    </div>
+                  </div>
+                </td>
+                <td>GLP-1 Inicio · 10 sem</td>
+                <td><strong>3 / 10</strong></td>
+                <td><span class="tag tag-reprog">Sin respuesta</span></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:var(--sp-2);">
+                    <div class="progress" style="width:80px;"><div class="progress-bar warn" style="width:65%"></div></div>
+                    <span style="font-size:11px; color:var(--c-text-muted);">65%</span>
+                  </div>
+                </td>
+                <td>Dr. La Torre</td>
+                <td><span style="font-size:12px; color:var(--c-text-subtle);">Hace 4 días</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA · ADMISIÓN (Solo registro de paciente nuevo)
+      ================================================================ -->
+      <section class="screen" id="screen-admision">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Admisión</h1>
+            <div class="subtitle">Registra un paciente nuevo. La solicitud de programa la crea el médico desde Solicitudes Médicas GutDoc.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div style="background: var(--s-curso-bg); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-5); display: flex; gap: 10px; align-items: flex-start;">
+              <i data-lucide="info" class="icon" style="width:16px; height:16px; color: var(--s-curso-fg); margin-top: 2px; flex-shrink: 0;"></i>
+              <div style="font-size: 12.5px; color: var(--s-curso-fg); line-height: 1.5;">
+                <strong>Recepción</strong> registra al paciente al momento de la cita. Los datos clínicos se llenan en la historia clínica externa (DocToCliq). Cuando el médico decida un tratamiento, abrirá una <strong>Solicitud de Programa</strong> desde el módulo de Solicitudes Médicas GutDoc.
+              </div>
+            </div>
+
+            <h3 style="font-size: 14px; margin-bottom: var(--sp-3); color: var(--c-marino);">Datos personales</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nombres *</label>
+                <input type="text" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Apellido paterno *</label>
+                <input type="text" class="form-input" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Apellido materno</label>
+                <input type="text" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fecha de nacimiento *</label>
+                <input type="date" class="form-input" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">DNI / Documento *</label>
+                <input type="text" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tipo</label>
+                <select class="form-select">
+                  <option>DNI</option>
+                  <option>Carné de Extranjería</option>
+                  <option>Pasaporte</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Género</label>
+                <select class="form-select">
+                  <option>Femenino</option>
+                  <option>Masculino</option>
+                  <option>Otro</option>
+                  <option>Prefiere no decir</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fuente de captación</label>
+                <select class="form-select">
+                  <option>Instagram</option>
+                  <option>Facebook</option>
+                  <option>YouTube</option>
+                  <option>Substack</option>
+                  <option>Referido paciente</option>
+                  <option>Referido médico</option>
+                  <option>Web</option>
+                  <option>Recepción directa</option>
+                  <option>Campaña específica</option>
+                </select>
+              </div>
+            </div>
+
+            <h3 style="font-size: 14px; margin: var(--sp-5) 0 var(--sp-3); color: var(--c-marino);">Contacto</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Correo electrónico *</label>
+                <input type="email" class="form-input" placeholder="paciente@ejemplo.com" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Teléfono *</label>
+                <input type="tel" class="form-input" placeholder="+51 999 888 777" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">WhatsApp *</label>
+                <input type="tel" class="form-input" placeholder="+51 999 888 777" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Distrito</label>
+                <input type="text" class="form-input" />
+              </div>
+            </div>
+
+            <h3 style="font-size: 14px; margin: var(--sp-5) 0 var(--sp-3); color: var(--c-marino);">Consentimientos</h3>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="checkbox-row"><input type="checkbox" />Acepta tratamiento de datos personales (LGPD)</label>
+              <label class="checkbox-row"><input type="checkbox" />Acepta recibir comunicaciones por WhatsApp</label>
+              <label class="checkbox-row"><input type="checkbox" />Acepta recibir comunicaciones de seguimiento de largo plazo</label>
+            </div>
+
+            <div style="display:flex; gap:var(--sp-2); justify-content:flex-end; margin-top:var(--sp-5); padding-top:var(--sp-4); border-top:1px solid var(--c-border-soft);">
+              <button class="btn btn-ghost">Cancelar</button>
+              <button class="btn btn-primary" data-action="submit-paciente"><i data-lucide="user-check" class="icon"></i>Registrar paciente</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA · CICLO DE PACIENTE
+      ================================================================ -->
+      <section class="screen" id="screen-ciclo">
+        <div class="page-header">
+          <div class="page-title">
+            <h1 style="display:flex; align-items:center; gap:var(--sp-3);">
+              <button class="btn btn-ghost" data-screen="pacientes" style="font-size:18px;"><i data-lucide="chevron-left" class="icon" style="width:20px;height:20px;"></i></button>
+              María González
+            </h1>
+            <div class="subtitle">PAC-00042 · F · 38 años · +51 999 888 777 · maria.gonzalez@example.com</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="external-link" class="icon"></i>Historia clínica</button>
+            <button class="btn btn-secondary"><i data-lucide="phone" class="icon"></i>WhatsApp</button>
+            <button class="btn btn-cian" data-action="close-cycle"><i data-lucide="check-circle-2" class="icon"></i>Cerrar ciclo</button>
+            <button class="btn btn-primary"><i data-lucide="edit-3" class="icon"></i>Editar</button>
+          </div>
+        </div>
+
+        <!-- Header del paciente con stats -->
+        <div class="patient-header">
+          <div class="patient-top">
+            <div class="patient-avatar-big">MG</div>
+            <div class="patient-name-block">
+              <h2>Ronda 2 · GLP-1 Continuación 10 semanas</h2>
+              <div class="patient-meta-row">
+                <span><i data-lucide="user-cog" class="icon"></i>Program Specialist: Patricia R.</span>
+                <span><i data-lucide="user" class="icon"></i>Médico responsable: Dr. La Torre</span>
+                <span><i data-lucide="calendar" class="icon"></i>Inicio: 14 abr 2026</span>
+                <span><i data-lucide="map-pin" class="icon"></i>GutClinic</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="patient-stats">
+            <div class="patient-stat">
+              <div class="patient-stat-label">Cumplimiento</div>
+              <div class="patient-stat-value">91<span style="font-size:13px; opacity:0.7;">%</span></div>
+              <div class="patient-stat-sub" style="color:var(--c-cian-soft);">21 / 23 tareas completadas</div>
+            </div>
+            <div class="patient-stat">
+              <div class="patient-stat-label">Días en programa</div>
+              <div class="patient-stat-value">21<span style="font-size:13px; opacity:0.7;">d</span></div>
+              <div class="patient-stat-sub">Inicio: 14 abr 2026</div>
+            </div>
+            <div class="patient-stat">
+              <div class="patient-stat-label">Próximo hito</div>
+              <div class="patient-stat-value" style="font-size:15px; line-height:1.3;">Aplicación 4</div>
+              <div class="patient-stat-sub">Mañana · 10:30 · GutClinic</div>
+            </div>
+            <div class="patient-stat">
+              <div class="patient-stat-label">Adherencia mensajes</div>
+              <div class="patient-stat-value">3 <span style="font-size:13px; opacity:0.7;">/ 3</span></div>
+              <div class="patient-stat-sub" style="color:var(--c-cian-soft);">Respondió todos LISTO</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline del programa -->
+        <div class="card" style="margin-bottom:var(--sp-5);">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="git-branch" class="icon"></i>Cronograma de 10 semanas</div>
+            <span class="tag tag-curso">Sem. 3 — Adaptación</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-week complete"><div class="week-num">1</div><div class="week-label">Adapt</div></div>
+            <div class="timeline-week complete"><div class="week-num">2</div><div class="week-label">Adapt</div></div>
+            <div class="timeline-week current"><div class="week-num">3</div><div class="week-label">Adapt</div></div>
+            <div class="timeline-week future"><div class="week-num">4</div><div class="week-label">Optim</div></div>
+            <div class="timeline-week future"><div class="week-num">5</div><div class="week-label">Optim</div></div>
+            <div class="timeline-week future"><div class="week-num">6</div><div class="week-label">Optim</div></div>
+            <div class="timeline-week future"><div class="week-num">7</div><div class="week-label">Optim</div></div>
+            <div class="timeline-week future"><div class="week-num">8</div><div class="week-label">Consol</div></div>
+            <div class="timeline-week future"><div class="week-num">9</div><div class="week-label">Consol</div></div>
+            <div class="timeline-week future"><div class="week-num">10</div><div class="week-label">Result</div></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Componentes activos -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="layers" class="icon"></i>Componentes del programa</div>
+              <button class="btn btn-ghost btn-sm">Editar</button>
+            </div>
+            <div class="component-grid">
+              <div class="component active">
+                <div class="component-icon"><i data-lucide="stethoscope" class="icon"></i></div>
+                <div class="component-info">
+                  <div class="component-name">Médico Especialista</div>
+                  <div class="component-state">Activo · 6 sesiones</div>
+                </div>
+                <div class="component-toggle"></div>
+              </div>
+              <div class="component active">
+                <div class="component-icon"><i data-lucide="apple" class="icon"></i></div>
+                <div class="component-info">
+                  <div class="component-name">Nutrición</div>
+                  <div class="component-state">Activo · 2 sesiones</div>
+                </div>
+                <div class="component-toggle"></div>
+              </div>
+              <div class="component inactive">
+                <div class="component-icon"><i data-lucide="brain" class="icon"></i></div>
+                <div class="component-info">
+                  <div class="component-name">Psicología</div>
+                  <div class="component-state">No aplica · Tiene psicólogo externo</div>
+                </div>
+                <div class="component-toggle"></div>
+              </div>
+              <div class="component active">
+                <div class="component-icon"><i data-lucide="dumbbell" class="icon"></i></div>
+                <div class="component-info">
+                  <div class="component-name">Deporte</div>
+                  <div class="component-state">Activo · 1 sesión</div>
+                </div>
+                <div class="component-toggle"></div>
+              </div>
+              <div class="component active">
+                <div class="component-icon"><i data-lucide="syringe" class="icon"></i></div>
+                <div class="component-info">
+                  <div class="component-name">Aplicaciones</div>
+                  <div class="component-state">Activo · 3 / 10</div>
+                </div>
+                <div class="component-toggle"></div>
+              </div>
+              <div class="component active">
+                <div class="component-icon"><i data-lucide="activity" class="icon"></i></div>
+                <div class="component-info">
+                  <div class="component-name">InBody</div>
+                  <div class="component-state">Activo · 3 / 10</div>
+                </div>
+                <div class="component-toggle"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar derecha del paciente -->
+          <div style="display:flex; flex-direction:column; gap:var(--sp-5);">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i data-lucide="image" class="icon"></i>Fotos protocolizadas</div>
+              </div>
+              <div class="card-body">
+                <div style="display:flex; gap:var(--sp-3); align-items:center; margin-bottom:var(--sp-3); padding:var(--sp-3); background:var(--s-completa-bg); border-radius:var(--r-md);">
+                  <i data-lucide="check-circle-2" style="width:20px; height:20px; color:var(--s-completa-fg);"></i>
+                  <div style="flex:1;">
+                    <div style="font-weight:600; font-size:13px; color:var(--c-marino);">Foto inicial</div>
+                    <div style="font-size:11px; color:var(--c-text-muted);">14 abr 2026 · Téc. Aplicaciones</div>
+                  </div>
+                </div>
+                <div style="display:flex; gap:var(--sp-3); align-items:center; padding:var(--sp-3); background:var(--s-pendiente-bg); border-radius:var(--r-md);">
+                  <i data-lucide="clock" style="width:20px; height:20px; color:var(--c-text-muted);"></i>
+                  <div style="flex:1;">
+                    <div style="font-weight:600; font-size:13px; color:var(--c-marino);">Foto de resultados</div>
+                    <div style="font-size:11px; color:var(--c-text-muted);">Programada en sem. 10</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i data-lucide="history" class="icon"></i>Historial de rondas</div>
+              </div>
+              <div class="card-body" style="padding:var(--sp-3);">
+                <div style="border-left:2px solid var(--c-cian); padding:var(--sp-2) var(--sp-4); margin-bottom:var(--sp-3); position:relative;">
+                  <div style="position:absolute; left:-7px; top:6px; width:12px; height:12px; border-radius:50%; background:var(--c-cian);"></div>
+                  <div style="font-weight:700; font-size:13px; color:var(--c-marino);">Ronda 2 · En curso</div>
+                  <div style="font-size:11px; color:var(--c-text-muted);">GLP-1 Continuación 10 sem</div>
+                  <div style="font-size:11px; color:var(--c-text-subtle);">Inicio 14 abr 2026 · Sem 3/10 · 91% cumplimiento</div>
+                </div>
+                <div style="border-left:2px solid var(--c-border); padding:var(--sp-2) var(--sp-4); position:relative;">
+                  <div style="position:absolute; left:-7px; top:6px; width:12px; height:12px; border-radius:50%; background:var(--c-border); border:2px solid white;"></div>
+                  <div style="font-weight:700; font-size:13px; color:var(--c-marino);">Ronda 1 · Completada</div>
+                  <div style="font-size:11px; color:var(--c-text-muted);">GLP-1 Inicio 10 sem</div>
+                  <div style="font-size:11px; color:var(--c-text-subtle);">Ene–mar 2026 · 87% cumplimiento</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA · CICLO DE PACIENTE POST-ALTA (Sin programa activo)
+      ================================================================ -->
+      <section class="screen" id="screen-postalta">
+        <div class="page-header">
+          <div class="page-title">
+            <h1 style="display:flex; align-items:center; gap:var(--sp-3);">
+              <button class="btn btn-ghost" data-screen="pacientes" style="font-size:18px;"><i data-lucide="chevron-left" class="icon" style="width:20px;height:20px;"></i></button>
+              Elena Moreno
+            </h1>
+            <div class="subtitle">PAC-00012 · F · 42 años · +51 977 555 333 · Post-alta · En seguimiento de largo plazo</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="external-link" class="icon"></i>Historia clínica</button>
+            <button class="btn btn-secondary"><i data-lucide="phone" class="icon"></i>WhatsApp</button>
+            <button class="btn btn-cian"><i data-lucide="repeat" class="icon"></i>Iniciar nueva ronda</button>
+          </div>
+        </div>
+
+        <!-- Header del paciente con stats post-alta -->
+        <div class="patient-header" style="background: linear-gradient(135deg, var(--c-indigo) 0%, var(--c-marino) 100%);">
+          <div class="patient-top">
+            <div class="patient-avatar-big">EM</div>
+            <div class="patient-name-block">
+              <h2>Post-alta · Seguimiento de largo plazo</h2>
+              <div class="patient-meta-row">
+                <span><i data-lucide="check-circle-2" class="icon"></i>Alta dada: 4 nov 2025</span>
+                <span><i data-lucide="user" class="icon"></i>Médico de referencia: Dr. La Torre</span>
+                <span><i data-lucide="award" class="icon"></i>1 ronda completada</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="patient-stats">
+            <div class="patient-stat">
+              <div class="patient-stat-label">Próximo seguimiento</div>
+              <div class="patient-stat-value" style="font-size: 17px; line-height: 1.2;">6 meses</div>
+              <div class="patient-stat-sub" style="color:var(--c-cian-soft);">Vence en 3 días</div>
+            </div>
+            <div class="patient-stat">
+              <div class="patient-stat-label">Días post-alta</div>
+              <div class="patient-stat-value">180<span style="font-size:13px; opacity:0.7;">d</span></div>
+              <div class="patient-stat-sub">Alta: 4 nov 2025</div>
+            </div>
+            <div class="patient-stat">
+              <div class="patient-stat-label">Mensajes recibidos</div>
+              <div class="patient-stat-value">12 <span style="font-size:13px; opacity:0.7;">/ 14</span></div>
+              <div class="patient-stat-sub" style="color:var(--c-cian-soft);">86% adherencia</div>
+            </div>
+            <div class="patient-stat">
+              <div class="patient-stat-label">Riesgo de recaída</div>
+              <div class="patient-stat-value" style="font-size: 17px; line-height: 1.2;">Bajo</div>
+              <div class="patient-stat-sub">Score: 22 / 100</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline de seguimientos LP -->
+        <div class="card" style="margin-bottom:var(--sp-5);">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="calendar-clock" class="icon"></i>Cronograma de seguimientos · De por vida</div>
+            <span class="tag tag-pendiente">Próximo: 6 meses</span>
+          </div>
+          <div class="card-body" style="padding: var(--sp-5);">
+            <div class="lp-timeline">
+              <div class="lp-step done">
+                <div class="lp-step-dot"><i data-lucide="check" class="icon" style="width:14px;height:14px;"></i></div>
+                <div class="lp-step-content">
+                  <div class="lp-step-title">Alta médica</div>
+                  <div class="lp-step-meta">4 nov 2025 · Hace 180 días</div>
+                </div>
+              </div>
+              <div class="lp-step done">
+                <div class="lp-step-dot"><i data-lucide="check" class="icon" style="width:14px;height:14px;"></i></div>
+                <div class="lp-step-content">
+                  <div class="lp-step-title">Control 3 meses</div>
+                  <div class="lp-step-meta">4 feb 2026 · Realizado · Mantuvo peso</div>
+                </div>
+              </div>
+              <div class="lp-step active">
+                <div class="lp-step-dot"></div>
+                <div class="lp-step-content">
+                  <div class="lp-step-title">Seguimiento 6 meses <span class="tag tag-curso" style="font-size:10px; margin-left:6px;">Vence en 3 días</span></div>
+                  <div class="lp-step-meta">5 mayo 2026 · WhatsApp · Mensaje + Substack programado</div>
+                </div>
+              </div>
+              <div class="lp-step pending">
+                <div class="lp-step-dot"></div>
+                <div class="lp-step-content">
+                  <div class="lp-step-title">Seguimiento 12 meses</div>
+                  <div class="lp-step-meta">4 nov 2026 · Programado</div>
+                </div>
+              </div>
+              <div class="lp-step pending">
+                <div class="lp-step-dot"></div>
+                <div class="lp-step-content">
+                  <div class="lp-step-title">Aniversario anual · Año 2</div>
+                  <div class="lp-step-meta">4 nov 2027 · Programado</div>
+                </div>
+              </div>
+              <div class="lp-step pending">
+                <div class="lp-step-dot"></div>
+                <div class="lp-step-content">
+                  <div class="lp-step-title">Aniversario anual · Año 3</div>
+                  <div class="lp-step-meta">4 nov 2028 · Programado</div>
+                </div>
+              </div>
+              <div class="lp-step infinite">
+                <div class="lp-step-dot"></div>
+                <div class="lp-step-content">
+                  <div class="lp-step-title" style="font-style: italic; color: var(--c-text-muted);">Continúa anualmente · De por vida</div>
+                  <div class="lp-step-meta" style="color: var(--c-text-subtle);">Mantenimiento y prevención de recaída</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Historial de rondas -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="history" class="icon"></i>Historial de rondas</div>
+              <button class="btn btn-cian btn-sm"><i data-lucide="plus" class="icon"></i>Nueva ronda</button>
+            </div>
+            <div class="card-body" style="padding:var(--sp-3);">
+              <div style="border-left:2px solid #1F7A4D; padding:var(--sp-3) var(--sp-4); margin-bottom:var(--sp-2); position:relative; background: var(--s-completa-bg); border-radius: 0 var(--r-md) var(--r-md) 0;">
+                <div style="position:absolute; left:-7px; top:14px; width:12px; height:12px; border-radius:50%; background:#1F7A4D;"></div>
+                <div style="font-weight:700; font-size:13px; color:var(--c-marino);">Ronda 1 · Completada</div>
+                <div style="font-size:11.5px; color:var(--c-text-muted);">GLP-1 Inicio 10 sem · Decisión: Alta médica</div>
+                <div style="font-size:11.5px; color:var(--c-text-subtle); margin-top:2px;">Ago–nov 2025 · 92% cumplimiento</div>
+              </div>
+              <div style="text-align:center; padding: var(--sp-4); color: var(--c-text-subtle); font-size: 12px; font-style: italic;">
+                Sin más rondas registradas
+              </div>
+            </div>
+          </div>
+
+          <!-- Acciones disponibles -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="zap" class="icon"></i>Acciones rápidas</div>
+            </div>
+            <div class="card-body">
+              <div style="display:flex; flex-direction:column; gap:var(--sp-2);">
+                <button class="btn btn-cian btn-block"><i data-lucide="repeat" class="icon"></i>Iniciar nueva ronda de programa</button>
+                <button class="btn btn-secondary btn-block"><i data-lucide="trending-down" class="icon"></i>Iniciar microdosificación</button>
+                <button class="btn btn-secondary btn-block"><i data-lucide="message-circle" class="icon"></i>Enviar mensaje de seguimiento ahora</button>
+                <button class="btn btn-secondary btn-block"><i data-lucide="alert-circle" class="icon"></i>Registrar incidencia</button>
+                <button class="btn btn-ghost btn-block"><i data-lucide="user-x" class="icon"></i>Marcar opt-out de seguimiento</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--sp-5);" class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="message-square" class="icon"></i>Últimos mensajes recibidos</div>
+            <button class="btn btn-ghost btn-sm">Ver todos</button>
+          </div>
+          <div class="card-body flush">
+            <div class="agenda-row">
+              <div class="agenda-time" style="width: 90px; font-size: 11px;">04 feb 2026</div>
+              <div class="agenda-bar done"></div>
+              <div class="agenda-content">
+                <div class="agenda-title">Mensaje 3 meses post-alta</div>
+                <div class="agenda-meta">Substack: "Mantenimiento del peso a largo plazo" <span class="dot"></span> Respondió LISTO en 4h</div>
+              </div>
+              <span class="tag tag-completa">Respondido</span>
+            </div>
+            <div class="agenda-row">
+              <div class="agenda-time" style="width: 90px; font-size: 11px;">04 nov 2025</div>
+              <div class="agenda-bar done"></div>
+              <div class="agenda-content">
+                <div class="agenda-title">Mensaje de bienvenida post-alta</div>
+                <div class="agenda-meta">YouTube: "Tu vida después del programa" <span class="dot"></span> Respondió LISTO en 1h</div>
+              </div>
+              <span class="tag tag-completa">Respondido</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA 4 · TAREAS DE HOY
+      ================================================================ -->
+      <section class="screen" id="screen-tareas">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Tareas de hoy</h1>
+            <div class="subtitle">Lunes 4 de mayo · 14 tareas · 8 completadas · 3 vencidas</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="filter" class="icon"></i>Filtrar</button>
+            <button class="btn btn-primary"><i data-lucide="plus" class="icon"></i>Nueva tarea</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="filters">
+            <span class="chip active">Todas <span class="count">14</span></span>
+            <span class="chip">Pendientes <span class="count">3</span></span>
+            <span class="chip">En curso <span class="count">0</span></span>
+            <span class="chip">Completadas <span class="count">8</span></span>
+            <span class="chip">Vencidas <span class="count">3</span></span>
+            <span class="chip">Mis tareas <span class="count">5</span></span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Paciente</th>
+                <th>Tarea</th>
+                <th>Servicio</th>
+                <th>Sede</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody class="stagger">
+              <tr>
+                <td><strong>09:00</strong></td>
+                <td><div class="pac-cell"><div class="pac-avatar">MG</div><span class="cell-name">María González</span></div></td>
+                <td>Inbody 3 <span class="cell-sub">GLP-1 Sem 3</span></td>
+                <td>Téc. Aplicaciones</td>
+                <td>GutClinic</td>
+                <td><span class="tag tag-completa">Completada</span></td>
+                <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+              </tr>
+              <tr>
+                <td><strong>10:30</strong></td>
+                <td><div class="pac-cell"><div class="pac-avatar">CV</div><span class="cell-name">Carlos Vega</span></div></td>
+                <td>Aplicación 4 <span class="cell-sub">GLP-1 Sem 4</span></td>
+                <td>Téc. Aplicaciones</td>
+                <td>GutClinic</td>
+                <td><span class="tag tag-completa">Completada</span></td>
+                <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+              </tr>
+              <tr>
+                <td><strong>11:15</strong></td>
+                <td><div class="pac-cell"><div class="pac-avatar">LM</div><span class="cell-name">Lucía Mendoza</span></div></td>
+                <td>Consulta Nutrición <span class="cell-sub">Combinado Sem 2</span></td>
+                <td>Nutrición</td>
+                <td>Virtual</td>
+                <td><span class="tag tag-pendiente">Pendiente</span></td>
+                <td><button class="btn btn-cian btn-sm" data-complete>Completar ✓</button></td>
+              </tr>
+              <tr>
+                <td><strong>12:00</strong></td>
+                <td><div class="pac-cell"><div class="pac-avatar">RS</div><span class="cell-name">Roberto Silva</span></div></td>
+                <td>Seguimiento 3 <span class="cell-sub">GLP-1 Sem 3</span></td>
+                <td>Seguimiento Médico</td>
+                <td>Virtual</td>
+                <td><span class="tag tag-pendiente">Pendiente</span></td>
+                <td><button class="btn btn-cian btn-sm" data-complete>Completar ✓</button></td>
+              </tr>
+              <tr>
+                <td><strong>14:30</strong></td>
+                <td><div class="pac-cell"><div class="pac-avatar">DC</div><span class="cell-name">Diana Castro</span></div></td>
+                <td>Foto Inicial <span class="cell-sub" style="color:#9B2A1F;">Requiere evidencia</span></td>
+                <td>Téc. Aplicaciones</td>
+                <td>GutClinic</td>
+                <td><span class="tag tag-pendiente">Pendiente</span></td>
+                <td>
+                  <button class="btn btn-cian btn-sm" data-complete>Completar ✓</button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>15:45</strong></td>
+                <td><div class="pac-cell"><div class="pac-avatar">PM</div><span class="cell-name">Patricio Mora</span></div></td>
+                <td>Foto Inicial <span class="cell-sub" style="color:var(--s-desistida-fg);">Paciente desistió</span></td>
+                <td>Téc. Aplicaciones</td>
+                <td>GutClinic</td>
+                <td><span class="tag tag-desistida">Desistida</span></td>
+                <td><button class="btn btn-ghost btn-sm">Ver motivo</button></td>
+              </tr>
+              <tr>
+                <td><strong>16:00</strong></td>
+                <td><div class="pac-cell"><div class="pac-avatar">AF</div><span class="cell-name">Andrés Fuentes</span></div></td>
+                <td>Consulta Resultados <span class="cell-sub">GLP-1 Sem 10 · Decisión</span></td>
+                <td>Médico Especialista</td>
+                <td>GutClinic</td>
+                <td><span class="tag tag-vencida">Vencida 1d</span></td>
+                <td><button class="btn btn-cian btn-sm" data-complete>Completar ✓</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA 5 · MENSAJES PENDIENTES
+      ================================================================ -->
+      <section class="screen" id="screen-mensajes">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Mensajes pendientes</h1>
+            <div class="subtitle">9 mensajes listos para enviar · Modo manual asistido · Make + WhatsApp API en fase futura</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="archive" class="icon"></i>Historial</button>
+            <button class="btn btn-secondary"><i data-lucide="library" class="icon"></i>Biblioteca contenido</button>
+            <button class="btn btn-secondary"><i data-lucide="settings" class="icon"></i>Plantillas</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:var(--sp-5);">
+          <div class="filters">
+            <span class="chip active">Todos <span class="count">9</span></span>
+            <span class="chip">Educativos <span class="count">7</span></span>
+            <span class="chip">Seg. Largo Plazo <span class="count">2</span></span>
+            <span class="chip">Recordatorios <span class="count">0</span></span>
+            <span class="chip">Sin respuesta &gt;48h <span class="count">3</span></span>
+          </div>
+          <div class="filters" style="border-top: 0; padding-top: var(--sp-3);">
+            <span style="font-size:11px; font-weight:600; color:var(--c-text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-right:var(--sp-2); display:inline-flex; align-items:center;">Tipo de contenido:</span>
+            <span class="chip active">Todos</span>
+            <span class="chip"><i data-lucide="youtube" style="width:13px;height:13px; vertical-align:-2px; margin-right:4px;"></i>YouTube <span class="count">5</span></span>
+            <span class="chip"><i data-lucide="file-text" style="width:13px;height:13px; vertical-align:-2px; margin-right:4px;"></i>Substack <span class="count">2</span></span>
+            <span class="chip"><i data-lucide="layers" style="width:13px;height:13px; vertical-align:-2px; margin-right:4px;"></i>Mixto <span class="count">2</span></span>
+          </div>
+        </div>
+
+        <div class="message-queue stagger">
+
+          <!-- Mensaje 1: YouTube + Substack (mixto) -->
+          <div class="message-card">
+            <div class="message-thumb-stack">
+              <div class="message-thumb">
+                <span class="content-type-badge"><i data-lucide="youtube" style="width:11px;height:11px;"></i>Video</span>
+                <span class="message-thumb-label">8:42</span>
+              </div>
+              <div class="message-thumb substack-thumb">
+                <span class="content-type-badge"><i data-lucide="file-text" style="width:11px;height:11px;"></i>Artículo</span>
+                <span class="message-thumb-label">Lectura · 6 min</span>
+              </div>
+            </div>
+            <div class="message-content">
+              <h4>
+                <span class="pac-avatar" style="width:24px;height:24px; font-size:10px;">MG</span>
+                María González · GLP-1 Sem 3
+                <span class="tag tag-curso">Adaptación</span>
+                <span class="content-tag mixto"><i data-lucide="layers" style="width:11px;height:11px;"></i>Mixto</span>
+              </h4>
+              <div style="font-size:12px; color:var(--c-text-muted);">Mensaje educativo · Ajustar alimentación · Lunes sugerido · Espera "LISTO" en 48h</div>
+              <div class="message-tags">
+                <span class="tag tag-pendiente">Listo para enviar</span>
+                <span class="tag tag-prioridad-baja">Prioridad media</span>
+              </div>
+              <div class="message-preview">
+                María, te queremos acompañar en tu semana 3 del programa. En esta etapa (fase de adaptación), el objetivo principal es: ajustar alimentación para potenciar resultados. Por eso, te enviamos este video: <strong>¿ESTÁS CON OZEMPIC? ASÍ DEBERÍAS COMER</strong>. Y este artículo del Dr. La Torre en Substack: <strong>"Cómo construir tu plato durante GLP-1"</strong>...
+              </div>
+              <div class="message-content-links">
+                <span class="content-link"><i data-lucide="youtube" style="width:12px;height:12px;"></i>youtu.be/ApDSlw0PWLY</span>
+                <span class="content-link"><i data-lucide="file-text" style="width:12px;height:12px;"></i>doctorsantiagolatorre/p/plato-glp1</span>
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="btn btn-secondary btn-sm" data-action="copy"><i data-lucide="copy" class="icon"></i>Copiar texto</button>
+              <button class="btn btn-cian btn-sm" data-action="open-wa"><i data-lucide="message-circle" class="icon"></i>Abrir WhatsApp</button>
+              <button class="btn btn-primary btn-sm" data-action="mark-sent"><i data-lucide="check" class="icon"></i>Marcar enviado</button>
+            </div>
+          </div>
+
+          <!-- Mensaje 2: Solo YouTube -->
+          <div class="message-card">
+            <div class="message-thumb-stack">
+              <div class="message-thumb">
+                <span class="content-type-badge"><i data-lucide="youtube" style="width:11px;height:11px;"></i>Video</span>
+                <span class="message-thumb-label">11:24</span>
+              </div>
+            </div>
+            <div class="message-content">
+              <h4>
+                <span class="pac-avatar" style="width:24px;height:24px; font-size:10px;">CV</span>
+                Carlos Vega · GLP-1 Sem 4
+                <span class="tag tag-curso">Optimización</span>
+                <span class="content-tag youtube"><i data-lucide="youtube" style="width:11px;height:11px;"></i>YouTube</span>
+              </h4>
+              <div style="font-size:12px; color:var(--c-text-muted);">Mensaje educativo · Resistencia a la insulina</div>
+              <div class="message-tags">
+                <span class="tag tag-pendiente">Listo para enviar</span>
+                <span class="tag tag-prioridad-baja">Prioridad media</span>
+              </div>
+              <div class="message-preview">
+                Hola Carlos, te queremos acompañar en tu semana 4 del programa. En esta etapa (fase de optimización), el objetivo principal es: mejorar la respuesta metabólica. Por eso, te enviamos este video para que lo revises con atención: <strong>RESISTENCIA A LA INSULINA</strong>...
+              </div>
+              <div class="message-content-links">
+                <span class="content-link"><i data-lucide="youtube" style="width:12px;height:12px;"></i>youtu.be/w-xfRFy37yU</span>
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="btn btn-secondary btn-sm" data-action="copy"><i data-lucide="copy" class="icon"></i>Copiar texto</button>
+              <button class="btn btn-cian btn-sm" data-action="open-wa"><i data-lucide="message-circle" class="icon"></i>Abrir WhatsApp</button>
+              <button class="btn btn-primary btn-sm" data-action="mark-sent"><i data-lucide="check" class="icon"></i>Marcar enviado</button>
+            </div>
+          </div>
+
+          <!-- Mensaje 3: Solo Substack -->
+          <div class="message-card">
+            <div class="message-thumb-stack">
+              <div class="message-thumb substack-thumb">
+                <span class="content-type-badge"><i data-lucide="file-text" style="width:11px;height:11px;"></i>Artículo</span>
+                <span class="message-thumb-label">Lectura · 9 min</span>
+              </div>
+            </div>
+            <div class="message-content">
+              <h4>
+                <span class="pac-avatar" style="width:24px;height:24px; font-size:10px;">DC</span>
+                Diana Castro · GLP-1 Sem 1
+                <span class="tag tag-curso">Adaptación</span>
+                <span class="content-tag substack"><i data-lucide="file-text" style="width:11px;height:11px;"></i>Substack</span>
+              </h4>
+              <div style="font-size:12px; color:var(--c-text-muted);">Mensaje educativo · Bienvenida a tu programa</div>
+              <div class="message-tags">
+                <span class="tag tag-pendiente">Listo para enviar</span>
+                <span class="tag tag-prioridad-media">Prioridad alta</span>
+              </div>
+              <div class="message-preview">
+                Diana, bienvenida a tu programa. En esta primera semana queremos compartir contigo el artículo del Dr. La Torre: <strong>"Las 3 fases de un programa GLP-1: qué esperar"</strong>. Te recomendamos leerlo con calma — entender el proceso mejora significativamente los resultados...
+              </div>
+              <div class="message-content-links">
+                <span class="content-link"><i data-lucide="file-text" style="width:12px;height:12px;"></i>doctorsantiagolatorre/p/3-fases-glp1</span>
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="btn btn-secondary btn-sm" data-action="copy"><i data-lucide="copy" class="icon"></i>Copiar texto</button>
+              <button class="btn btn-cian btn-sm" data-action="open-wa"><i data-lucide="message-circle" class="icon"></i>Abrir WhatsApp</button>
+              <button class="btn btn-primary btn-sm" data-action="mark-sent"><i data-lucide="check" class="icon"></i>Marcar enviado</button>
+            </div>
+          </div>
+
+          <!-- Mensaje 4: Seguimiento LP con Substack -->
+          <div class="message-card">
+            <div class="message-thumb-stack">
+              <div class="message-thumb" style="background: linear-gradient(135deg, var(--c-indigo), var(--c-marino));">
+                <span class="content-type-badge"><i data-lucide="calendar-clock" style="width:11px;height:11px;"></i>Seg. LP</span>
+                <span class="message-thumb-label">6 meses</span>
+              </div>
+              <div class="message-thumb substack-thumb">
+                <span class="content-type-badge"><i data-lucide="file-text" style="width:11px;height:11px;"></i>Artículo</span>
+                <span class="message-thumb-label">Lectura · 4 min</span>
+              </div>
+            </div>
+            <div class="message-content">
+              <h4>
+                <span class="pac-avatar" style="width:24px;height:24px; font-size:10px;">EM</span>
+                Elena Moreno · Seguimiento 6 meses
+                <span class="tag tag-pendiente">Largo plazo</span>
+                <span class="content-tag mixto"><i data-lucide="layers" style="width:11px;height:11px;"></i>Mixto</span>
+              </h4>
+              <div style="font-size:12px; color:var(--c-text-muted);">Alerta temprana · Mantenimiento de peso · Prevención de recaída</div>
+              <div class="message-tags">
+                <span class="tag tag-pendiente">Listo para enviar</span>
+                <span class="tag tag-prioridad-media">Prioridad alta</span>
+              </div>
+              <div class="message-preview">
+                Hola Elena, han pasado 6 meses desde tu alta del programa GLP-1. Recordá que la obesidad es una condición crónica y nuestro objetivo es acompañarte en el mantenimiento. Te compartimos este artículo del Dr. La Torre: <strong>"Cómo evitar la recaída en los primeros 12 meses"</strong>. Si has subido 2 o 3 kg, no esperes...
+              </div>
+              <div class="message-content-links">
+                <span class="content-link"><i data-lucide="file-text" style="width:12px;height:12px;"></i>doctorsantiagolatorre/p/evitar-recaida</span>
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="btn btn-secondary btn-sm" data-action="copy"><i data-lucide="copy" class="icon"></i>Copiar texto</button>
+              <button class="btn btn-cian btn-sm" data-action="open-wa"><i data-lucide="message-circle" class="icon"></i>Abrir WhatsApp</button>
+              <button class="btn btn-primary btn-sm" data-action="mark-sent"><i data-lucide="check" class="icon"></i>Marcar enviado</button>
+            </div>
+          </div>
+
+          <!-- Mensaje 5: Ya enviado -->
+          <div class="message-card sent">
+            <div class="message-thumb-stack">
+              <div class="message-thumb">
+                <span class="content-type-badge"><i data-lucide="youtube" style="width:11px;height:11px;"></i>Video</span>
+                <span class="message-thumb-label">9:18</span>
+              </div>
+            </div>
+            <div class="message-content">
+              <h4>
+                <span class="pac-avatar" style="width:24px;height:24px; font-size:10px;">LM</span>
+                Lucía Mendoza · Combinado Sem 2
+                <span class="tag tag-completa">Enviado · Respondió LISTO</span>
+              </h4>
+              <div style="font-size:12px; color:var(--c-text-muted);">Enviado hoy 08:30 · Respondió 09:42 · Tiempo respuesta: 1h 12m</div>
+              <div class="message-preview">
+                Hola Lucía, te queremos acompañar en tu semana 2 del programa Combinado. En esta etapa (fase de adaptación), el objetivo principal es: comprender cómo actúa el tratamiento...
+              </div>
+            </div>
+            <div class="message-actions">
+              <button class="btn btn-ghost btn-sm"><i data-lucide="eye" class="icon"></i>Ver detalle</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA · SOLICITUDES MÉDICAS GUTDOC
+      ================================================================ -->
+      <section class="screen" id="screen-solicitudes-medicas">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Solicitudes Médicas GutDoc</h1>
+            <div class="subtitle">Interconsultas, laboratorios, imágenes y derivaciones · 5 abiertas · 12 completadas este mes</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="filter" class="icon"></i>Filtros</button>
+            <button class="btn btn-secondary"><i data-lucide="download" class="icon"></i>Exportar</button>
+            <button class="btn btn-primary" data-action="open-new-solicitud-medica"><i data-lucide="file-plus" class="icon"></i>Nueva solicitud</button>
+          </div>
+        </div>
+
+        <!-- KPIs de solicitudes médicas -->
+        <div class="kpi-grid stagger" style="margin-bottom:var(--sp-6);">
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="inbox" class="icon"></i>Pendientes</div>
+            <div class="kpi-value">5</div>
+            <div class="kpi-delta neutral">2 urgentes</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="send" class="icon"></i>Enviadas</div>
+            <div class="kpi-value">8</div>
+            <div class="kpi-delta neutral">Esperando respuesta</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="check-circle-2" class="icon"></i>Completadas mes</div>
+            <div class="kpi-value">12</div>
+            <div class="kpi-delta up">Tiempo prom. 3.4d</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="file-text" class="icon"></i>PDFs generados</div>
+            <div class="kpi-value">17</div>
+            <div class="kpi-delta neutral">Este mes en Drive</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="filters">
+            <span class="chip active">Todas <span class="count">25</span></span>
+            <span class="chip">Pendientes <span class="count">5</span></span>
+            <span class="chip">Enviadas <span class="count">8</span></span>
+            <span class="chip">Agendadas <span class="count">4</span></span>
+            <span class="chip">Completadas <span class="count">8</span></span>
+          </div>
+          <div class="filters" style="border-top: 0; padding-top: var(--sp-3);">
+            <span style="font-size:11px; font-weight:600; color:var(--c-text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-right:var(--sp-2); display:inline-flex; align-items:center;">Tipo:</span>
+            <span class="chip active">Todas</span>
+            <span class="chip"><i data-lucide="clipboard-list" style="width:12px;height:12px; vertical-align:-2px; margin-right:4px;"></i>Solicitud de programa <span class="count">3</span></span>
+            <span class="chip"><i data-lucide="flask-conical" style="width:12px;height:12px; vertical-align:-2px; margin-right:4px;"></i>Laboratorio <span class="count">9</span></span>
+            <span class="chip"><i data-lucide="scan" style="width:12px;height:12px; vertical-align:-2px; margin-right:4px;"></i>Imágenes <span class="count">3</span></span>
+            <span class="chip"><i data-lucide="user-cog" style="width:12px;height:12px; vertical-align:-2px; margin-right:4px;"></i>Interconsulta <span class="count">6</span></span>
+            <span class="chip"><i data-lucide="apple" style="width:12px;height:12px; vertical-align:-2px; margin-right:4px;"></i>Nutrición <span class="count">2</span></span>
+            <span class="chip"><i data-lucide="brain" style="width:12px;height:12px; vertical-align:-2px; margin-right:4px;"></i>Psicología <span class="count">3</span></span>
+            <span class="chip"><i data-lucide="pill" style="width:12px;height:12px; vertical-align:-2px; margin-right:4px;"></i>Psiquiatría <span class="count">2</span></span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Paciente</th>
+                <th>Tipo</th>
+                <th>Detalle</th>
+                <th>Médico</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>PDF</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody class="stagger">
+              <tr>
+                <td><span style="font-family:var(--f-display); font-size:11px; color:#3A269F; font-weight:700;">SPG-00018</span></td>
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar" style="background: linear-gradient(135deg, #3A269F, var(--c-marino));">PN</div>
+                    <span class="cell-name">Patricia Núñez</span>
+                  </div>
+                </td>
+                <td>
+                  <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#3A269F;">
+                    <i data-lucide="clipboard-list" style="width:13px;height:13px;"></i>Sol. programa
+                  </span>
+                </td>
+                <td>
+                  <div style="font-size:12.5px;">GLP-1 Inicio · 10 sem · Tirzepatide</div>
+                  <div class="cell-sub">Paquete completo · Protocolo A</div>
+                </td>
+                <td><span style="font-size:12px;">Dr. La Torre</span></td>
+                <td><span class="tag tag-prioridad-media">Media</span></td>
+                <td><span class="tag tag-curso">En ventas</span></td>
+                <td>
+                  <a href="#" class="content-link" style="cursor:pointer;">
+                    <i data-lucide="file-text" style="width:12px;height:12px;"></i>SPG-00018.pdf
+                  </a>
+                </td>
+                <td><button class="btn btn-ghost btn-sm" data-screen="comercial">Ver embudo</button></td>
+              </tr>
+              <tr>
+                <td><span style="font-family:var(--f-display); font-size:11px; color:var(--c-text-muted); font-weight:700;">SOL-00084</span></td>
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">DC</div>
+                    <span class="cell-name">Diana Castro</span>
+                  </div>
+                </td>
+                <td>
+                  <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600;">
+                    <i data-lucide="flask-conical" style="width:13px;height:13px; color:var(--c-cian);"></i>Laboratorio
+                  </span>
+                </td>
+                <td>
+                  <div style="font-size:12.5px;">Perfil lipídico + Glucosa basal + HbA1c</div>
+                  <div class="cell-sub">3 pruebas · Ayuno 12h</div>
+                </td>
+                <td><span style="font-size:12px;">Dr. La Torre</span></td>
+                <td><span class="tag tag-prioridad-alta">Urgente</span></td>
+                <td><span class="tag tag-pendiente">Pendiente</span></td>
+                <td><button class="btn btn-cian btn-sm" data-action="generate-pdf"><i data-lucide="file-text" class="icon"></i>Generar</button></td>
+                <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+              </tr>
+              <tr>
+                <td><span style="font-family:var(--f-display); font-size:11px; color:var(--c-text-muted); font-weight:700;">SOL-00083</span></td>
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">MG</div>
+                    <span class="cell-name">María González</span>
+                  </div>
+                </td>
+                <td>
+                  <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600;">
+                    <i data-lucide="user-cog" style="width:13px;height:13px; color:var(--c-cian);"></i>Interconsulta
+                  </span>
+                </td>
+                <td>
+                  <div style="font-size:12.5px;">Endocrinología</div>
+                  <div class="cell-sub">Evaluación de tiroides</div>
+                </td>
+                <td><span style="font-size:12px;">Dr. La Torre</span></td>
+                <td><span class="tag tag-prioridad-media">Media</span></td>
+                <td><span class="tag tag-curso">Enviada</span></td>
+                <td>
+                  <a href="#" class="content-link" style="cursor:pointer;">
+                    <i data-lucide="file-text" style="width:12px;height:12px;"></i>SOL-00083.pdf
+                  </a>
+                </td>
+                <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+              </tr>
+              <tr>
+                <td><span style="font-family:var(--f-display); font-size:11px; color:var(--c-text-muted); font-weight:700;">SOL-00082</span></td>
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">CV</div>
+                    <span class="cell-name">Carlos Vega</span>
+                  </div>
+                </td>
+                <td>
+                  <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600;">
+                    <i data-lucide="scan" style="width:13px;height:13px; color:var(--c-cian);"></i>Imágenes
+                  </span>
+                </td>
+                <td>
+                  <div style="font-size:12.5px;">Ecografía abdominal completa</div>
+                  <div class="cell-sub">Ayuno 6h · Vejiga llena</div>
+                </td>
+                <td><span style="font-size:12px;">Dr. La Torre</span></td>
+                <td><span class="tag tag-prioridad-baja">Baja</span></td>
+                <td><span class="tag tag-curso">Agendada</span></td>
+                <td>
+                  <a href="#" class="content-link" style="cursor:pointer;">
+                    <i data-lucide="file-text" style="width:12px;height:12px;"></i>SOL-00082.pdf
+                  </a>
+                </td>
+                <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+              </tr>
+              <tr>
+                <td><span style="font-family:var(--f-display); font-size:11px; color:var(--c-text-muted); font-weight:700;">SOL-00081</span></td>
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">RS</div>
+                    <span class="cell-name">Roberto Silva</span>
+                  </div>
+                </td>
+                <td>
+                  <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600;">
+                    <i data-lucide="brain" style="width:13px;height:13px; color:var(--c-cian);"></i>Psicología
+                  </span>
+                </td>
+                <td>
+                  <div style="font-size:12.5px;">Evaluación adherencia al tratamiento</div>
+                  <div class="cell-sub">Externa · Lic. Ramírez</div>
+                </td>
+                <td><span style="font-size:12px;">Dr. La Torre</span></td>
+                <td><span class="tag tag-prioridad-media">Media</span></td>
+                <td><span class="tag tag-pendiente">Pendiente</span></td>
+                <td><button class="btn btn-cian btn-sm" data-action="generate-pdf"><i data-lucide="file-text" class="icon"></i>Generar</button></td>
+                <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+              </tr>
+              <tr>
+                <td><span style="font-family:var(--f-display); font-size:11px; color:var(--c-text-muted); font-weight:700;">SOL-00080</span></td>
+                <td>
+                  <div class="pac-cell">
+                    <div class="pac-avatar">LM</div>
+                    <span class="cell-name">Lucía Mendoza</span>
+                  </div>
+                </td>
+                <td>
+                  <span style="display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600;">
+                    <i data-lucide="pill" style="width:13px;height:13px; color:var(--c-cian);"></i>Psiquiatría
+                  </span>
+                </td>
+                <td>
+                  <div style="font-size:12.5px;">Evaluación pre-bariátrica</div>
+                  <div class="cell-sub">Externa · Dra. Quintana</div>
+                </td>
+                <td><span style="font-size:12px;">Dr. La Torre</span></td>
+                <td><span class="tag tag-prioridad-alta">Urgente</span></td>
+                <td><span class="tag tag-completa">Completada</span></td>
+                <td>
+                  <a href="#" class="content-link" style="cursor:pointer;">
+                    <i data-lucide="file-text" style="width:12px;height:12px;"></i>SOL-00080.pdf
+                  </a>
+                </td>
+                <td><button class="btn btn-ghost btn-sm">Ver</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA 6 · SEGUIMIENTO COMERCIAL
+      ================================================================ -->
+      <section class="screen" id="screen-comercial">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Seguimiento comercial</h1>
+            <div class="subtitle">19 solicitudes activas · 12 cerradas este mes · Tasa de conversión 62%</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="filter" class="icon"></i>Por campaña</button>
+            <button class="btn btn-secondary"><i data-lucide="bar-chart-3" class="icon"></i>Reporte</button>
+            <button class="btn btn-primary"><i data-lucide="plus" class="icon"></i>Nueva solicitud</button>
+          </div>
+        </div>
+
+        <!-- KPIs comerciales -->
+        <div class="kpi-grid stagger" style="margin-bottom:var(--sp-6);">
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="inbox" class="icon"></i>Nuevas esta semana</div>
+            <div class="kpi-value">7</div>
+            <div class="kpi-delta up">+2 vs semana pasada</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="send" class="icon"></i>Presupuestos enviados</div>
+            <div class="kpi-value">11</div>
+            <div class="kpi-delta neutral">8 esperando respuesta</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="check-circle-2" class="icon"></i>Conversión cerrada</div>
+            <div class="kpi-value">12</div>
+            <div class="kpi-delta up">PEN 84,500 facturados</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label"><i data-lucide="clock" class="icon"></i>Tiempo prom. cierre</div>
+            <div class="kpi-value">4.2<span class="unit">d</span></div>
+            <div class="kpi-delta up">−1.3d vs mes anterior</div>
+          </div>
+        </div>
+
+        <!-- Kanban del embudo -->
+        <div class="kanban">
+          <div class="kanban-col" data-state="nuevo">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title">Nuevas</div>
+              <div class="kanban-col-count">3</div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Patricia Núñez</div>
+              <div class="kanban-card-program">GLP-1 Inicio 10 sem · Tirzepatide</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">PEN 6,800</span>
+                <span class="kanban-card-source">Instagram</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Sergio Luna</div>
+              <div class="kanban-card-program">Combinado 16 sem</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">PEN 14,200</span>
+                <span class="kanban-card-source">Referido</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Andrea Paredes</div>
+              <div class="kanban-card-program">Membership Pérdida</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">PEN 2,400</span>
+                <span class="kanban-card-source">YouTube</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col" data-state="presupuesto">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title">Presupuesto enviado</div>
+              <div class="kanban-col-count">5</div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Felipe Aguirre</div>
+              <div class="kanban-card-program">GLP-1 Inicio 5 sem</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">PEN 3,500</span>
+                <span class="kanban-card-source">Substack</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Mónica Salinas</div>
+              <div class="kanban-card-program">Manga Gástrica</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">USD 8,900</span>
+                <span class="kanban-card-source">Web</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Diego Rojas</div>
+              <div class="kanban-card-program">GLP-1 Continuación</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">PEN 6,200</span>
+                <span class="kanban-card-source">Recepción</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Valeria Cano</div>
+              <div class="kanban-card-program">Membership Recomp.</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">PEN 2,400</span>
+                <span class="kanban-card-source">Instagram</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Joaquín Vidal</div>
+              <div class="kanban-card-program">GLP-1 Inicio 10 sem</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount">PEN 6,800</span>
+                <span class="kanban-card-source">Referido</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col" data-state="seguimiento">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title">En seguimiento</div>
+              <div class="kanban-col-count">4</div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Beatriz Morán</div>
+              <div class="kanban-card-program">GLP-1 Inicio 10 sem</div>
+              <div class="kanban-card-foot">
+                <span style="font-size:10px; color:#9B2A1F;">Sin respuesta · 5d</span>
+                <span class="kanban-card-source">Campaña Q2</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Hugo Espinoza</div>
+              <div class="kanban-card-program">Combinado 16 sem</div>
+              <div class="kanban-card-foot">
+                <span style="font-size:10px; color:#8A5A0C;">Objeción: precio</span>
+                <span class="kanban-card-source">Instagram</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Carolina Béjar</div>
+              <div class="kanban-card-program">GLP-1 Inicio 4 sem</div>
+              <div class="kanban-card-foot">
+                <span style="font-size:10px; color:#8A5A0C;">Objeción: timing</span>
+                <span class="kanban-card-source">Substack</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Manuel Ortiz</div>
+              <div class="kanban-card-program">Manga Gástrica</div>
+              <div class="kanban-card-foot">
+                <span style="font-size:10px; color:#5C6B82;">Espera familia</span>
+                <span class="kanban-card-source">Referido</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col" data-state="pagado">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title">Pagado · Activo</div>
+              <div class="kanban-col-count">5</div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Diana Castro</div>
+              <div class="kanban-card-program">GLP-1 Inicio 5 sem</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount" style="color:#1F7A4D;">PEN 3,500 ✓</span>
+                <span class="kanban-card-source">Instagram</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Roberto Silva</div>
+              <div class="kanban-card-program">GLP-1 Inicio 10 sem</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount" style="color:#1F7A4D;">PEN 6,800 ✓</span>
+                <span class="kanban-card-source">Referido</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Lucía Mendoza</div>
+              <div class="kanban-card-program">Combinado 16 sem</div>
+              <div class="kanban-card-foot">
+                <span class="kanban-card-amount" style="color:#1F7A4D;">PEN 14,200 ✓</span>
+                <span class="kanban-card-source">Web</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col" data-state="no-pago">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title">No convirtieron</div>
+              <div class="kanban-col-count">2</div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Cristóbal Pérez</div>
+              <div class="kanban-card-program">GLP-1 Inicio 10 sem</div>
+              <div class="kanban-card-foot">
+                <span style="font-size:10px; color:#9B2A1F;">Económico</span>
+                <span class="kanban-card-source">Instagram</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Rocío Iturbe</div>
+              <div class="kanban-card-program">Membership Hipertrofia</div>
+              <div class="kanban-card-foot">
+                <span style="font-size:10px; color:#9B2A1F;">Decisión paciente</span>
+                <span class="kanban-card-source">Campaña Q1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           PANTALLA 7 · INCIDENCIAS
+      ================================================================ -->
+      <section class="screen" id="screen-incidencias">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>Incidencias</h1>
+            <div class="subtitle">14 abiertas · 3 críticas · Tiempo promedio resolución: 8.2 horas</div>
+          </div>
+          <div style="display:flex; gap:var(--sp-2);">
+            <button class="btn btn-secondary"><i data-lucide="filter" class="icon"></i>Filtros</button>
+            <button class="btn btn-primary"><i data-lucide="plus" class="icon"></i>Registrar incidencia</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:var(--sp-5);">
+          <div class="filters">
+            <span class="chip active">Abiertas <span class="count">14</span></span>
+            <span class="chip">Críticas <span class="count">3</span></span>
+            <span class="chip">En proceso <span class="count">6</span></span>
+            <span class="chip">En espera paciente <span class="count">2</span></span>
+            <span class="chip">Resueltas (mes) <span class="count">42</span></span>
+            <span class="chip">Adherencia <span class="count">5</span></span>
+            <span class="chip">Administrativo <span class="count">4</span></span>
+          </div>
+        </div>
+
+        <div class="stagger">
+          <div class="incident-card alta">
+            <div>
+              <div class="incident-head">
+                <span class="incident-id">INC-00142</span>
+                <span class="tag tag-prioridad-alta">Crítica</span>
+                <span class="tag tag-curso">En proceso</span>
+              </div>
+              <div class="incident-title">Receta vencida · GLP-1</div>
+              <div class="incident-desc">Paciente en sem 5 reportó que su receta venció hace 2 días. Próxima aplicación es mañana. Requiere renovación urgente del médico tratante.</div>
+              <div class="incident-meta">
+                <span><i data-lucide="user" class="icon"></i>Diana Castro · PAC-00071</span>
+                <span><i data-lucide="user-cog" class="icon"></i>Asignado: Recepción</span>
+                <span><i data-lucide="clock" class="icon"></i>Hace 2h 14m</span>
+                <span><i data-lucide="tag" class="icon"></i>Receta</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:var(--sp-2); align-items:end;">
+              <button class="btn btn-cian btn-sm">Resolver</button>
+              <button class="btn btn-ghost btn-sm">Ver detalle</button>
+            </div>
+          </div>
+
+          <div class="incident-card media">
+            <div>
+              <div class="incident-head">
+                <span class="incident-id">INC-00141</span>
+                <span class="tag tag-prioridad-media">Media</span>
+                <span class="tag tag-curso">En proceso</span>
+              </div>
+              <div class="incident-title">No respondió mensaje educativo de semana 2</div>
+              <div class="incident-desc">El paciente no ha respondido "LISTO" al mensaje educativo de semana 2. Ya se enviaron 2 recordatorios automáticos. Adherencia educativa en riesgo.</div>
+              <div class="incident-meta">
+                <span><i data-lucide="user" class="icon"></i>Roberto Silva · PAC-00064</span>
+                <span><i data-lucide="user-cog" class="icon"></i>Asignado: Program Specialist</span>
+                <span><i data-lucide="clock" class="icon"></i>Hace 1d 6h</span>
+                <span><i data-lucide="tag" class="icon"></i>Adherencia educativa</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:var(--sp-2); align-items:end;">
+              <button class="btn btn-cian btn-sm">Contactar</button>
+              <button class="btn btn-ghost btn-sm">Ver detalle</button>
+            </div>
+          </div>
+
+          <div class="incident-card alta">
+            <div>
+              <div class="incident-head">
+                <span class="incident-id">INC-00140</span>
+                <span class="tag tag-prioridad-alta">Crítica</span>
+                <span class="tag tag-pendiente">Abierta</span>
+              </div>
+              <div class="incident-title">Reagendar Inbody 5 · Conflicto de equipo</div>
+              <div class="incident-desc">El equipo InBody 580 está fuera de servicio para mantenimiento programado. Se debe reagendar la medición de 4 pacientes para mañana.</div>
+              <div class="incident-meta">
+                <span><i data-lucide="user" class="icon"></i>Lucía Mendoza · +3 más</span>
+                <span><i data-lucide="user-cog" class="icon"></i>Asignado: Equipo Biomédico</span>
+                <span><i data-lucide="clock" class="icon"></i>Hace 4h</span>
+                <span><i data-lucide="tag" class="icon"></i>Agenda</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:var(--sp-2); align-items:end;">
+              <button class="btn btn-cian btn-sm">Reagendar</button>
+              <button class="btn btn-ghost btn-sm">Ver detalle</button>
+            </div>
+          </div>
+
+          <div class="incident-card baja">
+            <div>
+              <div class="incident-head">
+                <span class="incident-id">INC-00139</span>
+                <span class="tag tag-prioridad-baja">Baja</span>
+                <span class="tag tag-curso">En espera paciente</span>
+              </div>
+              <div class="incident-title">Pendiente envío de comprobante de pago</div>
+              <div class="incident-desc">Paciente realizó pago por transferencia pero no envió el voucher. Confirmación de finanzas en pausa hasta recibir evidencia.</div>
+              <div class="incident-meta">
+                <span><i data-lucide="user" class="icon"></i>Joaquín Vidal · PAC-00088</span>
+                <span><i data-lucide="user-cog" class="icon"></i>Asignado: Finanzas</span>
+                <span><i data-lucide="clock" class="icon"></i>Hace 3d</span>
+                <span><i data-lucide="tag" class="icon"></i>Pago</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:var(--sp-2); align-items:end;">
+              <button class="btn btn-cian btn-sm">Recordar paciente</button>
+              <button class="btn btn-ghost btn-sm">Ver detalle</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- .content -->
+  </main>
+</div><!-- .app -->
+
+<!-- ================================================================
+     MOBILE OVERLAY (cuando sidebar está abierto en móvil)
+================================================================ -->
+<div class="mobile-overlay" id="mobile-overlay"></div>
+
+<!-- ================================================================
+     BOTTOM NAVIGATION (solo móvil)
+================================================================ -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-item active" data-screen="dashboard">
+    <i data-lucide="layout-dashboard" class="icon"></i>
+    <span>Hoy</span>
+  </div>
+  <div class="bottom-nav-item" data-screen="tareas">
+    <i data-lucide="check-square" class="icon"></i>
+    <span class="badge">14</span>
+    <span>Tareas</span>
+  </div>
+  <div class="bottom-nav-item" data-screen="mensajes">
+    <i data-lucide="message-square" class="icon"></i>
+    <span class="badge">9</span>
+    <span>Mensajes</span>
+  </div>
+  <div class="bottom-nav-item" data-screen="pacientes">
+    <i data-lucide="users" class="icon"></i>
+    <span>Pacientes</span>
+  </div>
+  <div class="bottom-nav-item" data-screen="incidencias">
+    <i data-lucide="alert-circle" class="icon"></i>
+    <span class="badge">3</span>
+    <span>Incidencias</span>
+  </div>
+</nav>
+
+<!-- ================================================================
+     MODAL · NUEVA SOLICITUD MÉDICA
+================================================================ -->
+<div class="modal-overlay" id="modal-new-solicitud">
+  <div class="modal" style="max-width: 760px;">
+    <div class="modal-header">
+      <div>
+        <h3>Nueva Solicitud Médica GutDoc</h3>
+        <div style="font-size:12px; color:var(--c-text-muted); margin-top:3px;">Genera y guarda un PDF en Drive automáticamente</div>
+      </div>
+      <button class="icon-btn" data-modal-close-sm><i data-lucide="x" class="icon"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <h3 style="font-size: 13px; margin-bottom: var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">1 · Paciente y médico</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Paciente *</label>
+          <input type="text" class="form-input" placeholder="Buscar por DNI, nombre o código…" value="María González · PAC-00042" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Médico solicitante</label>
+          <input type="text" class="form-input" value="Dr. Santiago La Torre" disabled style="background: var(--c-bg);" />
+        </div>
+      </div>
+
+      <h3 style="font-size: 13px; margin: var(--sp-5) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">2 · Tipo de solicitud</h3>
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: var(--sp-3);">
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="programa" checked /><i data-lucide="clipboard-list" class="icon"></i><span>Solicitud de programa</span></label>
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="laboratorio" /><i data-lucide="flask-conical" class="icon"></i><span>Laboratorio</span></label>
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="imagen" /><i data-lucide="scan" class="icon"></i><span>Imágenes</span></label>
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="interconsulta" /><i data-lucide="user-cog" class="icon"></i><span>Interconsulta</span></label>
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="nutricion" /><i data-lucide="apple" class="icon"></i><span>Nutrición</span></label>
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="psicologia" /><i data-lucide="brain" class="icon"></i><span>Psicología</span></label>
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="psiquiatria" /><i data-lucide="pill" class="icon"></i><span>Psiquiatría</span></label>
+        <label class="solicitud-type-pill"><input type="radio" name="sol-type" value="otro" /><i data-lucide="more-horizontal" class="icon"></i><span>Otro</span></label>
+      </div>
+
+      <!-- Sección condicional: SOLICITUD DE PROGRAMA -->
+      <div class="sol-type-section" data-section="programa">
+        <div style="background: rgba(58, 38, 159, 0.06); border: 1px solid rgba(58, 38, 159, 0.18); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-4); display: flex; gap: 10px; align-items: flex-start;">
+          <i data-lucide="zap" class="icon" style="width:16px; height:16px; color: #3A269F; margin-top: 2px; flex-shrink: 0;"></i>
+          <div style="font-size: 12.5px; color: #3A269F; line-height: 1.5;">
+            <strong>Flujo automático:</strong> al guardar, se genera un PDF y la solicitud aparece en el embudo de Seguimiento Comercial. Cuando Ventas confirme el pago, se activará automáticamente el ciclo del programa con sus tareas y mensajes.
+          </div>
+        </div>
+
+        <h3 style="font-size: 13px; margin: var(--sp-4) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">3 · Programa recomendado</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Programa</label>
+            <select class="form-select">
+              <option>GLP-1 Inicio · 10 semanas</option>
+              <option>GLP-1 Inicio · 5 semanas</option>
+              <option>GLP-1 Inicio · 4 semanas</option>
+              <option>GLP-1 Continuación · 10 semanas</option>
+              <option>Combinado Balón + GLP-1 · 16 semanas</option>
+              <option>Manga Gástrica · 16 semanas</option>
+              <option>Microdosificación</option>
+              <option>Membership Dieta y Ejercicio</option>
+              <option>Membership Pérdida de Grasa</option>
+              <option>Membership Hipertrofia Muscular</option>
+              <option>Membership Recomposición Corporal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Medicamento / estrategia</label>
+            <select class="form-select">
+              <option>Semaglutide</option>
+              <option>Tirzepatide</option>
+              <option>Retatrutide</option>
+              <option>N/A</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="font-size: 13px; margin: var(--sp-5) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">4 · Servicios incluidos</h3>
+        <div style="margin-bottom: var(--sp-3); display: flex; flex-wrap: wrap; gap: 6px;">
+          <label style="display:inline-flex; align-items:center; gap:7px; padding: 7px 14px; border:2px solid var(--c-cian); border-radius: var(--r-md); background: rgba(14,159,202,0.06); cursor:pointer; font-size:12px; font-weight:600; color: var(--c-marino);">
+            <input type="radio" name="paquete" value="completo" checked />
+            Paquete completo
+          </label>
+          <label style="display:inline-flex; align-items:center; gap:7px; padding: 7px 14px; border:1px solid var(--c-border); border-radius: var(--r-md); background:white; cursor:pointer; font-size:12px;">
+            <input type="radio" name="paquete" value="individual" />
+            Individuales
+          </label>
+          <label style="display:inline-flex; align-items:center; gap:7px; padding: 7px 14px; border:1px solid var(--c-border); border-radius: var(--r-md); background:white; cursor:pointer; font-size:12px;">
+            <input type="radio" name="paquete" value="personalizado" />
+            Personalizado
+          </label>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: var(--sp-2);">
+          <label class="checkbox-pill"><input type="checkbox" checked />Nutrición</label>
+          <label class="checkbox-pill"><input type="checkbox" checked />Psicología</label>
+          <label class="checkbox-pill"><input type="checkbox" checked />Deporte</label>
+          <label class="checkbox-pill"><input type="checkbox" />Endocrinología</label>
+          <label class="checkbox-pill"><input type="checkbox" />Cardiología</label>
+          <label class="checkbox-pill"><input type="checkbox" />Gastroenterología</label>
+          <label class="checkbox-pill"><input type="checkbox" />Laboratorio</label>
+          <label class="checkbox-pill"><input type="checkbox" />Otro</label>
+        </div>
+
+        <h3 style="font-size: 13px; margin: var(--sp-5) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">5 · Protocolo y datos comerciales</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipo de protocolo</label>
+            <select class="form-select">
+              <option>A — Estándar</option>
+              <option>B — Intensivo</option>
+              <option>C — Adaptado</option>
+              <option>Personalizado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de inicio</label>
+            <select class="form-select">
+              <option>Sin antecedentes</option>
+              <option>Con antecedentes</option>
+              <option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Urgencia de inicio</label>
+            <select class="form-select">
+              <option>Sin apuro</option>
+              <option>Este mes</option>
+              <option>Esta semana</option>
+              <option>Inmediata</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Precio referencial (PEN)</label>
+            <input type="text" class="form-input" placeholder="6,800.00" />
+          </div>
+        </div>
+        <div class="form-group full" style="margin-top: var(--sp-3);">
+          <label class="form-label">Observaciones del médico para Ventas</label>
+          <textarea class="form-textarea" placeholder="Contexto del paciente, motivaciones, posibles objeciones..."></textarea>
+        </div>
+      </div>
+
+      <!-- Sección condicional: LABORATORIO -->
+      <div class="sol-type-section" data-section="laboratorio" style="display:none;">
+        <h3 style="font-size: 13px; margin: var(--sp-4) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">3 · Pruebas de laboratorio <span style="font-weight: 500; color: var(--c-text-muted); text-transform: none; font-size: 11px; margin-left: 6px;">(Master de pruebas metabólicas)</span></h3>
+
+        <div class="lab-search-container">
+          <div class="lab-search">
+            <i data-lucide="search" class="icon"></i>
+            <input type="text" id="lab-search-input" placeholder="Buscar prueba: 'perfil lipídico', 'TSH', 'HOMA', 'vitamina D'…" autocomplete="off" />
+          </div>
+          <div class="lab-suggestions" id="lab-suggestions" style="display:none;"></div>
+        </div>
+
+        <div class="lab-selected" id="lab-selected">
+          <div class="lab-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.58 16.5h12.85"/></svg>
+            Perfil lipídico completo
+            <span class="lab-chip-meta">Ayuno 12h</span>
+            <button class="lab-chip-remove" data-remove-lab>×</button>
+          </div>
+          <div class="lab-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.58 16.5h12.85"/></svg>
+            Glucosa basal en ayunas
+            <span class="lab-chip-meta">Ayuno 8h</span>
+            <button class="lab-chip-remove" data-remove-lab>×</button>
+          </div>
+          <div class="lab-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.58 16.5h12.85"/></svg>
+            Hemoglobina glicosilada (HbA1c)
+            <span class="lab-chip-meta">Sin ayuno</span>
+            <button class="lab-chip-remove" data-remove-lab>×</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección condicional: IMAGEN -->
+      <div class="sol-type-section" data-section="imagen" style="display:none;">
+        <h3 style="font-size: 13px; margin: var(--sp-4) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">3 · Estudio de imagen</h3>
+        <div class="form-group full">
+          <label class="form-label">Tipo de estudio</label>
+          <select class="form-select">
+            <option>Ecografía abdominal completa</option>
+            <option>Ecografía hepática</option>
+            <option>Ecografía de vesícula biliar</option>
+            <option>Ecografía pancreática</option>
+            <option>Tomografía de abdomen</option>
+            <option>Tomografía de abdomen con contraste</option>
+            <option>Resonancia de abdomen</option>
+            <option>Resonancia de abdomen con contraste</option>
+            <option>Otro estudio (detallar abajo)</option>
+          </select>
+        </div>
+        <div class="form-row" style="margin-top: var(--sp-3);">
+          <div class="form-group">
+            <label class="form-label">Requiere contraste</label>
+            <select class="form-select">
+              <option>No</option>
+              <option>Sí, oral</option>
+              <option>Sí, endovenoso</option>
+              <option>Sí, ambos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ayuno requerido</label>
+            <select class="form-select">
+              <option>Sin ayuno</option>
+              <option>4 horas</option>
+              <option>6 horas</option>
+              <option>8 horas</option>
+              <option>12 horas</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección condicional: INTERCONSULTA / NUTRICIÓN / PSICOLOGÍA / PSIQUIATRÍA / OTRO -->
+      <div class="sol-type-section" data-section="generic" style="display:none;">
+        <h3 style="font-size: 13px; margin: var(--sp-4) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">3 · Detalle</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Especialidad / destino</label>
+            <input type="text" class="form-input" placeholder="Ej: Endocrinología, Cardiología…" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Médico/profesional destino</label>
+            <input type="text" class="form-input" placeholder="Nombre (si externo)" />
+          </div>
+        </div>
+        <div class="form-group full" style="margin-top: var(--sp-3);">
+          <label class="form-label">Motivo de la solicitud</label>
+          <textarea class="form-textarea" placeholder="Describe el motivo y lo que se espera del profesional consultado…"></textarea>
+        </div>
+      </div>
+
+      <h3 style="font-size: 13px; margin: var(--sp-5) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;" data-only-not="programa">6 · Detalle e instrucciones</h3>
+      <div data-only-not="programa">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Prioridad</label>
+            <select class="form-select">
+              <option>Baja</option>
+              <option selected>Media</option>
+              <option>Alta</option>
+              <option>Urgente</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado inicial</label>
+            <select class="form-select">
+              <option selected>Pendiente</option>
+              <option>Enviada</option>
+              <option>Agendada</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Detalle de la solicitud (aparece en el PDF)</label>
+          <textarea class="form-textarea" placeholder="Indicaciones específicas, contexto clínico, lo que el médico externo o laboratorio debe saber…">Paciente en programa GLP-1, sem 3. Solicito control basal pre-ajuste de dosis. Reportar valores LDL, HDL, triglicéridos y glucosa en ayunas.</textarea>
+        </div>
+        <div class="form-group full" style="margin-top: var(--sp-3);">
+          <label class="form-label">Instrucciones para el paciente (aparece en el PDF)</label>
+          <textarea class="form-textarea" placeholder="Qué debe hacer el paciente antes y después: ayuno, hidratación, presentar receta, etc.">Acudir en ayunas de 12 horas. Puede tomar agua. Llevar DNI y esta solicitud impresa.</textarea>
+        </div>
+      </div>
+
+      <h3 style="font-size: 13px; margin: var(--sp-5) 0 var(--sp-3); color: var(--c-marino); text-transform: uppercase; letter-spacing: 0.06em;">7 · Generación de PDF</h3>
+      <div class="checkbox-row" style="margin-bottom: var(--sp-3);">
+        <input type="checkbox" id="generate-pdf-check" checked />
+        <label for="generate-pdf-check" style="cursor:pointer;">
+          <strong>Generar PDF automáticamente</strong> y guardarlo en Google Drive
+          <div style="font-size:11.5px; color: var(--c-text-muted); margin-top: 2px;">El PDF incluirá membrete GutClinic/GutDoc, datos del paciente, contenido de la solicitud, instrucciones y firma digital del médico solicitante.</div>
+        </label>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-modal-close-sm>Cancelar</button>
+      <button class="btn btn-secondary"><i data-lucide="save" class="icon"></i>Guardar borrador</button>
+      <button class="btn btn-primary" data-action="submit-solicitud-medica"><i data-lucide="send" class="icon"></i>Crear solicitud y generar PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     MODAL · CIERRE DE CICLO + DECISIÓN POST-PROGRAMA
+================================================================ -->
+<div class="modal-overlay" id="modal-close-cycle">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3>Cerrar ciclo · María González</h3>
+        <div style="font-size:12px; color:var(--c-text-muted); margin-top:3px;">Ronda 2 · GLP-1 Continuación 10 sem · Sem 10/10</div>
+      </div>
+      <button class="icon-btn" data-modal-close><i data-lucide="x" class="icon"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="background: var(--s-curso-bg); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-4); display: flex; gap: 10px; align-items: flex-start;">
+        <i data-lucide="info" class="icon" style="width:16px; height:16px; color: var(--s-curso-fg); margin-top: 2px; flex-shrink: 0;"></i>
+        <div style="font-size: 12.5px; color: var(--s-curso-fg); line-height: 1.5;">
+          Al cerrar el ciclo se debe registrar la decisión clínica post-programa. Esta decisión activará el siguiente paso del paciente (microdosificación, alta médica, nueva ronda o seguimiento de largo plazo).
+        </div>
+      </div>
+
+      <div class="panel-section-title">Decisión clínica post-programa</div>
+      <div class="decision-grid" id="decision-grid">
+        <div class="decision-option" data-decision="continuar_microdosificacion">
+          <i data-lucide="trending-down" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Continuar con microdosificación</div>
+            <div class="decision-option-sub">Tipo A o B · Mantenimiento</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="iniciar_nuevo_programa_completo">
+          <i data-lucide="repeat" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Iniciar nuevo programa completo</div>
+            <div class="decision-option-sub">Nueva ronda · 10 semanas</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="volver_escalar_dosis">
+          <i data-lucide="trending-up" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Volver a escalar dosis</div>
+            <div class="decision-option-sub">Estancamiento o aumento apetito</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="cambiar_estrategia_terapeutica">
+          <i data-lucide="shuffle" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Cambiar estrategia terapéutica</div>
+            <div class="decision-option-sub">Cambio de medicamento</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="pasar_alta_medica">
+          <i data-lucide="check-circle-2" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Pasar a alta médica</div>
+            <div class="decision-option-sub">3 sem post-programa</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="pasar_seguimiento_largo_plazo">
+          <i data-lucide="calendar-clock" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Pasar a seguimiento largo plazo</div>
+            <div class="decision-option-sub">6 m · 12 m · Anual</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="pausar_temporalmente">
+          <i data-lucide="pause-circle" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Pausar temporalmente</div>
+            <div class="decision-option-sub">Embarazo, comorbilidad nueva</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="no_continua_economico">
+          <i data-lucide="x-circle" class="icon"></i>
+          <div>
+            <div class="decision-option-text">No continúa · motivo económico</div>
+            <div class="decision-option-sub">Igual entra en seguimiento LP</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="no_continua_paciente">
+          <i data-lucide="user-x" class="icon"></i>
+          <div>
+            <div class="decision-option-text">No continúa · decisión paciente</div>
+            <div class="decision-option-sub">Igual entra en seguimiento LP</div>
+          </div>
+        </div>
+        <div class="decision-option" data-decision="pendiente_decision">
+          <i data-lucide="help-circle" class="icon"></i>
+          <div>
+            <div class="decision-option-text">Pendiente de decisión</div>
+            <div class="decision-option-sub">Volver más tarde</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cumplimiento total del ciclo</label>
+          <input type="text" class="form-input" value="91% (21 / 23 tareas)" disabled style="background: var(--c-bg);" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha de cierre</label>
+          <input type="date" class="form-input" value="2026-05-02" />
+        </div>
+      </div>
+
+      <div class="form-group full" style="margin-bottom: var(--sp-4);">
+        <label class="form-label">Comentarios administrativos</label>
+        <textarea class="form-textarea" placeholder="Observaciones operativas: incidencias durante el ciclo, próximos pasos, recomendaciones de seguimiento..."></textarea>
+      </div>
+
+      <div style="background: var(--s-curso-bg); border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-4); display: flex; gap: 10px; align-items: flex-start;">
+        <i data-lucide="external-link" class="icon" style="width:16px; height:16px; color: var(--s-curso-fg); margin-top: 2px; flex-shrink: 0;"></i>
+        <div style="font-size: 12px; color: var(--s-curso-fg); line-height: 1.5;">
+          Los datos clínicos del cierre (peso final, InBody, evolución metabólica) se registran en la <strong>historia clínica externa</strong> (DocToCliq u otra). Esta plataforma solo registra la decisión administrativa.
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; padding: var(--sp-3) var(--sp-4); background: var(--c-bg); border-radius: var(--r-md);">
+        <input type="checkbox" id="aprobado-paciente" style="width: 16px; height: 16px; cursor: pointer;" />
+        <label for="aprobado-paciente" style="font-size: 13px; cursor: pointer;">El paciente fue informado y aprobó la decisión</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-modal-close>Cancelar</button>
+      <button class="btn btn-primary" data-action="confirm-close-cycle"><i data-lucide="check" class="icon"></i>Confirmar cierre de ciclo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL LATERAL · DETALLE DE TARJETA KANBAN
+================================================================ -->
+<div class="side-panel" id="kanban-panel">
+  <div class="side-panel-header">
+    <div>
+      <h3 style="font-size: 17px;" id="panel-title">Patricia Núñez</h3>
+      <div style="font-size: 12px; color: var(--c-text-muted); margin-top: 2px;">SPG-00018 · GLP-1 Inicio 10 sem · Tirzepatide</div>
+    </div>
+    <button class="icon-btn" data-panel-close><i data-lucide="x" class="icon"></i></button>
+  </div>
+  <div class="side-panel-body">
+    <div class="panel-section">
+      <div class="panel-section-title">Mover a etapa</div>
+      <div class="panel-stage-selector">
+        <div class="panel-stage-option current" data-stage="nuevo">
+          <span class="stage-dot"></span>Nuevas
+        </div>
+        <div class="panel-stage-option" data-stage="presupuesto">
+          <span class="stage-dot"></span>Presupuesto enviado
+        </div>
+        <div class="panel-stage-option" data-stage="seguimiento">
+          <span class="stage-dot"></span>En seguimiento
+        </div>
+        <div class="panel-stage-option" data-stage="pagado">
+          <span class="stage-dot"></span>Pagado · Activo
+        </div>
+        <div class="panel-stage-option" data-stage="no-pago">
+          <span class="stage-dot"></span>No convirtió
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Información comercial</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Monto presupuesto</label>
+          <input type="text" class="form-input" value="PEN 6,800" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fuente de captación</label>
+          <select class="form-select">
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>Referido</option>
+            <option>Web</option>
+            <option>Substack</option>
+            <option>Recepción directa</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Campaña</label>
+        <select class="form-select">
+          <option>Sin campaña asignada</option>
+          <option>Campaña Q2 2026</option>
+          <option>Lanzamiento Tirzepatide</option>
+          <option>Día Mundial de la Obesidad</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Próxima acción</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Acción</label>
+          <input type="text" class="form-input" placeholder="Ej: Llamar para confirmar interés" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha</label>
+          <input type="date" class="form-input" value="2026-05-05" />
+        </div>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Observaciones</label>
+        <textarea class="form-textarea" placeholder="Notas del seguimiento comercial..."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="side-panel-footer">
+    <button class="btn btn-ghost" data-panel-close>Cancelar</button>
+    <button class="btn btn-primary btn-block" data-action="save-panel"><i data-lucide="save" class="icon"></i>Guardar cambios</button>
+  </div>
+</div>
+
+<!-- Toast host -->
+<div class="toast-host" id="toast-host"></div>
+
+<!-- ====================================================================
+     SCRIPTS MODULARES
+     Orden importa: mock-data → api → app
+==================================================================== -->
+<script src="js/mock-data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
