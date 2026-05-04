@@ -1,142 +1,45 @@
 /**
  * api.js — Cliente API para GutDoc Admin
  *
- * FASE 6 A1: Autenticación por email manual
- * El usuario ingresa su email la primera vez (se guarda en localStorage)
- * Cada request envía el email para que el backend valide.
+ * FASE 5 (Ruta A — modo mock): cada función devuelve datos del objeto MOCK.
+ * FASE 6 (cuando esté el Apps Script desplegado): se cambia USE_BACKEND a true
+ *   y todas las funciones pasan a hacer fetch real al endpoint.
+ *
+ * La interfaz es idéntica entre ambos modos — el resto del código
+ * (app.js y screens) NO se entera del cambio.
  */
 
 const API_CONFIG = {
-  USE_BACKEND: true,
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbziGqEaJISUiK1b2MCeNSA5O57mqKx1cuTA60YW2TVNl0BlVrd17qC5VwrSFJUD0L2f-w/exec',
-  ALLOWED_DOMAIN: 'clinicagutdoc.com',
-  STORAGE_KEY: 'gutdoc_user_email'
+  // Cambia a true cuando el backend Apps Script esté desplegado
+  USE_BACKEND: false,
+
+  // URL del Web App de Apps Script (reemplazar al desplegar)
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/REEMPLAZAR_CON_TU_URL_DEL_WEB_APP/exec',
+
+  // Latencia simulada del mock (ms) para que se sienta "real"
+  MOCK_LATENCY_MS: 200
 };
 
 /**
- * Obtiene el email del usuario.
- * Si no está guardado, lo pide y valida el dominio.
+ * Helper: simular delay de red en modo mock
  */
-function getUserEmail() {
-  let email = localStorage.getItem(API_CONFIG.STORAGE_KEY);
-
-  if (!email) {
-    email = promptForEmail();
-    if (email) {
-      localStorage.setItem(API_CONFIG.STORAGE_KEY, email);
-    }
-  }
-
-  return email;
+function mockDelay() {
+  return new Promise(resolve => setTimeout(resolve, API_CONFIG.MOCK_LATENCY_MS));
 }
 
 /**
- * Pide el email al usuario y valida el dominio.
- */
-function promptForEmail() {
-  let email = '';
-  let valid = false;
-
-  while (!valid) {
-    email = prompt(
-      '🔐 Inicio de sesión GutDoc Admin\n\n' +
-      'Ingresa tu correo de Google Workspace:\n' +
-      '(debe terminar en @' + API_CONFIG.ALLOWED_DOMAIN + ')'
-    );
-
-    if (email === null) {
-      // Usuario canceló
-      alert('No puedes usar el sistema sin autenticarte.');
-      return null;
-    }
-
-    email = email.toLowerCase().trim();
-
-    if (!email.endsWith('@' + API_CONFIG.ALLOWED_DOMAIN)) {
-      alert('❌ Email inválido.\n\nDebe terminar en @' + API_CONFIG.ALLOWED_DOMAIN);
-      continue;
-    }
-
-    valid = true;
-  }
-
-  return email;
-}
-
-/**
- * Cierra la sesión (borra el email guardado).
- */
-function logout() {
-  localStorage.removeItem(API_CONFIG.STORAGE_KEY);
-  location.reload();
-}
-
-/**
- * Hace una llamada al backend Apps Script.
+ * Helper: hacer fetch al backend de Apps Script
  */
 async function callBackend(action, params = {}) {
-  const userEmail = getUserEmail();
-  if (!userEmail) {
-    throw new Error('No hay usuario autenticado');
-  }
-
   try {
     const response = await fetch(API_CONFIG.APPS_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
-      body: JSON.stringify({
-        action: action,
-        params: params,
-        userEmail: userEmail
-      })
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action, params })
     });
-
-    // Con mode:'no-cors' no podemos leer la respuesta
-    // Por eso usamos mode normal abajo
-    return null;
-
-  } catch (err) {
-    console.error('Backend error:', err);
-    throw err;
-  }
-}
-
-/**
- * Versión que SÍ lee la respuesta (sin no-cors).
- * Apps Script Web Apps de Google permiten esto desde cualquier dominio
- * cuando se despliegan como "Cualquier usuario".
- */
-async function callBackendReal(action, params = {}) {
-  const userEmail = getUserEmail();
-  if (!userEmail) {
-    throw new Error('No hay usuario autenticado');
-  }
-
-  try {
-    const response = await fetch(API_CONFIG.APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
-      body: JSON.stringify({
-        action: action,
-        params: params,
-        userEmail: userEmail
-      }),
-      redirect: 'follow'
-    });
-
     const data = await response.json();
-
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
+    if (data.error) throw new Error(data.error);
     return data.data;
-
   } catch (err) {
     console.error('Backend error (' + action + '):', err);
     throw err;
@@ -144,7 +47,7 @@ async function callBackendReal(action, params = {}) {
 }
 
 // ============================================================
-// API Pública — todas las funciones que el frontend usa
+// API Pública
 // ============================================================
 
 const API = {
@@ -152,153 +55,117 @@ const API = {
   // ==================== AUTH ====================
 
   async checkSession() {
-    return callBackendReal('auth.checkSession', {});
+    if (API_CONFIG.USE_BACKEND) return callBackend('auth.checkSession');
+    await mockDelay();
+    return {
+      authenticated: true,
+      user: MOCK.usuario_activo
+    };
   },
 
   // ==================== PACIENTES ====================
 
   async getPatients() {
-    return callBackendReal('patients.list', {});
+    if (API_CONFIG.USE_BACKEND) return callBackend('patients.list');
+    await mockDelay();
+    return MOCK.pacientes;
   },
 
   async getPatient(id) {
-    return callBackendReal('patients.get', { id: id });
+    if (API_CONFIG.USE_BACKEND) return callBackend('patients.get', { id });
+    await mockDelay();
+    return MOCK.pacientes.find(p => p.id_paciente === id);
   },
 
   async createPatient(data) {
-    return callBackendReal('patients.create', { data: data });
+    if (API_CONFIG.USE_BACKEND) return callBackend('patients.create', { data });
+    await mockDelay();
+    return { ...data, id_paciente: 'PAC-NEW' };
   },
 
   async updatePatient(id, updates) {
-    return callBackendReal('patients.update', { id: id, updates: updates });
-  },
-
-  // ==================== CICLOS ====================
-
-  async getCycle(id) {
-    return callBackendReal('cycles.get', { id: id });
-  },
-
-  async closeCycle(idCiclo, decision, observaciones) {
-    return callBackendReal('cycles.close', {
-      idCiclo: idCiclo,
-      decision: decision,
-      observaciones: observaciones
-    });
+    if (API_CONFIG.USE_BACKEND) return callBackend('patients.update', { id, updates });
+    await mockDelay();
+    return { id_paciente: id, ...updates };
   },
 
   // ==================== TAREAS ====================
 
   async getTodayTasks() {
-    return callBackendReal('tasks.today', {});
+    if (API_CONFIG.USE_BACKEND) return callBackend('tasks.today');
+    await mockDelay();
+    return MOCK.tareas_hoy || [];
   },
 
   async completeTask(idTarea, observaciones) {
-    return callBackendReal('tasks.complete', {
-      idTarea: idTarea,
-      observaciones: observaciones
-    });
-  },
-
-  async markTaskDesistida(idTarea, motivo) {
-    return callBackendReal('tasks.markDesistida', {
-      idTarea: idTarea,
-      motivo: motivo
-    });
+    if (API_CONFIG.USE_BACKEND) return callBackend('tasks.complete', { idTarea, observaciones });
+    await mockDelay();
+    return { id_tarea: idTarea, estado: 'completada' };
   },
 
   async rescheduleTask(idTarea, nuevaFecha, motivo) {
-    return callBackendReal('tasks.reschedule', {
-      idTarea: idTarea,
-      nuevaFecha: nuevaFecha,
-      motivo: motivo
-    });
+    if (API_CONFIG.USE_BACKEND) return callBackend('tasks.reschedule', { idTarea, nuevaFecha, motivo });
+    await mockDelay();
+    return { id_tarea: idTarea, fecha_programada: nuevaFecha };
   },
 
   // ==================== MENSAJES ====================
 
   async getMessageQueue() {
-    return callBackendReal('messages.queue', {});
+    if (API_CONFIG.USE_BACKEND) return callBackend('messages.queue');
+    await mockDelay();
+    return MOCK.mensajes_pendientes || [];
   },
 
   async markMessageSent(idCola) {
-    return callBackendReal('messages.markSent', { idCola: idCola });
+    if (API_CONFIG.USE_BACKEND) return callBackend('messages.markSent', { idCola });
+    await mockDelay();
+    return { id_cola_mensaje: idCola, estado: 'enviado' };
   },
 
   // ==================== SOLICITUDES MÉDICAS ====================
 
   async getSolicitudes() {
-    return callBackendReal('solicitudes.list', {});
+    if (API_CONFIG.USE_BACKEND) return callBackend('solicitudes.list');
+    await mockDelay();
+    return MOCK.solicitudes_medicas || [];
   },
 
   async createSolicitud(data) {
-    return callBackendReal('solicitudes.create', { data: data });
-  },
-
-  async generateSolicitudPDF(idSolicitud) {
-    return callBackendReal('solicitudes.generatePDF', { idSolicitud: idSolicitud });
+    if (API_CONFIG.USE_BACKEND) return callBackend('solicitudes.create', { data });
+    await mockDelay();
+    return { ...data, id_solicitud_medica: 'SOL-NEW' };
   },
 
   // ==================== COMERCIAL ====================
 
   async getKanban() {
-    return callBackendReal('commercial.kanban', {});
+    if (API_CONFIG.USE_BACKEND) return callBackend('commercial.kanban');
+    await mockDelay();
+    return MOCK.kanban || [];
   },
 
   async updateStage(idSeguimiento, nuevoEstado, observaciones) {
-    return callBackendReal('commercial.updateStage', {
-      idSeguimiento: idSeguimiento,
-      nuevoEstado: nuevoEstado,
-      observaciones: observaciones
-    });
-  },
-
-  // ==================== PAGOS ====================
-
-  async confirmPayment(idPago) {
-    return callBackendReal('payments.confirm', { idPago: idPago });
+    if (API_CONFIG.USE_BACKEND) return callBackend('commercial.updateStage', { idSeguimiento, nuevoEstado, observaciones });
+    await mockDelay();
+    return { id_seguimiento: idSeguimiento, estado_comercial: nuevoEstado };
   },
 
   // ==================== INCIDENCIAS ====================
 
   async getIncidents() {
-    return callBackendReal('incidents.list', {});
-  },
-
-  async createIncident(data) {
-    return callBackendReal('incidents.create', { data: data });
-  },
-
-  async resolveIncident(idIncidencia, resolucion) {
-    return callBackendReal('incidents.resolve', {
-      idIncidencia: idIncidencia,
-      resolucion: resolucion
-    });
+    if (API_CONFIG.USE_BACKEND) return callBackend('incidents.list');
+    await mockDelay();
+    return MOCK.incidencias || [];
   },
 
   // ==================== MASTER DATA ====================
 
   async getMasterLabs() {
-    return callBackendReal('master.labs', {});
+    if (API_CONFIG.USE_BACKEND) return callBackend('master.labs');
+    await mockDelay();
+    return MOCK.master_labs || [];
   },
 
   async getMasterPrograms() {
-    return callBackendReal('master.programs', {});
-  },
-
-  async getMasterServices() {
-    return callBackendReal('master.services', {});
-  },
-
-  async getMasterProfesionales() {
-    return callBackendReal('master.profesionales', {});
-  },
-
-  // ==================== DASHBOARD ====================
-
-  async getDashboardMetrics() {
-    return callBackendReal('dashboard.metrics', {});
-  }
-};
-
-console.log('GutDoc API v2 (FASE 6 A1) — Auth por email');
+    if (API_CONFIG.USE_BACKEND) return callBackend
