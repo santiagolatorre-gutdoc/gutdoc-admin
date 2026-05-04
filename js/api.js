@@ -11,10 +11,10 @@
 
 const API_CONFIG = {
   // Cambia a true cuando el backend Apps Script esté desplegado
-  USE_BACKEND: false,
+  USE_BACKEND: true,
 
   // URL del Web App de Apps Script (reemplazar al desplegar)
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/REEMPLAZAR_CON_TU_URL_DEL_WEB_APP/exec',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwttrJjY1B6DqTtq8-dZxLhRHGgcN_KlOOL0fckYX0vZhlOAj5Jdp6DBg-Us6bifcZUJw/exec',
 
   // Latencia simulada del mock (ms) para que se sienta "real"
   MOCK_LATENCY_MS: 200
