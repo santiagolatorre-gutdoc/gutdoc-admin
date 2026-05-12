@@ -30,12 +30,13 @@ function mockDelay() {
 /**
  * Helper: hacer fetch al backend de Apps Script
  */
-async function callBackend(action, params = {}) {
+async function callBackend(action, params) {
+  if (params === undefined) params = {};
   try {
     const response = await fetch(API_CONFIG.APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action, params })
+      body: JSON.stringify({ action: action, params: params })
     });
     const data = await response.json();
     if (data.error) throw new Error(data.error);
@@ -72,21 +73,21 @@ const API = {
   },
 
   async getPatient(id) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('patients.get', { id });
+    if (API_CONFIG.USE_BACKEND) return callBackend('patients.get', { id: id });
     await mockDelay();
-    return MOCK.pacientes.find(p => p.id_paciente === id);
+    return MOCK.pacientes.find(function(p) { return p.id_paciente === id; });
   },
 
   async createPatient(data) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('patients.create', { data });
+    if (API_CONFIG.USE_BACKEND) return callBackend('patients.create', { data: data });
     await mockDelay();
-    return { ...data, id_paciente: 'PAC-NEW' };
+    return Object.assign({}, data, { id_paciente: 'PAC-NEW' });
   },
 
   async updatePatient(id, updates) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('patients.update', { id, updates });
+    if (API_CONFIG.USE_BACKEND) return callBackend('patients.update', { id: id, updates: updates });
     await mockDelay();
-    return { id_paciente: id, ...updates };
+    return Object.assign({ id_paciente: id }, updates);
   },
 
   // ==================== TAREAS ====================
@@ -98,13 +99,13 @@ const API = {
   },
 
   async completeTask(idTarea, observaciones) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('tasks.complete', { idTarea, observaciones });
+    if (API_CONFIG.USE_BACKEND) return callBackend('tasks.complete', { idTarea: idTarea, observaciones: observaciones });
     await mockDelay();
     return { id_tarea: idTarea, estado: 'completada' };
   },
 
   async rescheduleTask(idTarea, nuevaFecha, motivo) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('tasks.reschedule', { idTarea, nuevaFecha, motivo });
+    if (API_CONFIG.USE_BACKEND) return callBackend('tasks.reschedule', { idTarea: idTarea, nuevaFecha: nuevaFecha, motivo: motivo });
     await mockDelay();
     return { id_tarea: idTarea, fecha_programada: nuevaFecha };
   },
@@ -118,7 +119,7 @@ const API = {
   },
 
   async markMessageSent(idCola) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('messages.markSent', { idCola });
+    if (API_CONFIG.USE_BACKEND) return callBackend('messages.markSent', { idCola: idCola });
     await mockDelay();
     return { id_cola_mensaje: idCola, estado: 'enviado' };
   },
@@ -132,9 +133,9 @@ const API = {
   },
 
   async createSolicitud(data) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('solicitudes.create', { data });
+    if (API_CONFIG.USE_BACKEND) return callBackend('solicitudes.create', { data: data });
     await mockDelay();
-    return { ...data, id_solicitud_medica: 'SOL-NEW' };
+    return Object.assign({}, data, { id_solicitud_medica: 'SOL-NEW' });
   },
 
   // ==================== COMERCIAL ====================
@@ -146,7 +147,7 @@ const API = {
   },
 
   async updateStage(idSeguimiento, nuevoEstado, observaciones) {
-    if (API_CONFIG.USE_BACKEND) return callBackend('commercial.updateStage', { idSeguimiento, nuevoEstado, observaciones });
+    if (API_CONFIG.USE_BACKEND) return callBackend('commercial.updateStage', { idSeguimiento: idSeguimiento, nuevoEstado: nuevoEstado, observaciones: observaciones });
     await mockDelay();
     return { id_seguimiento: idSeguimiento, estado_comercial: nuevoEstado };
   },
@@ -168,4 +169,23 @@ const API = {
   },
 
   async getMasterPrograms() {
-    if (API_CONFIG.USE_BACKEND) return callBackend
+    if (API_CONFIG.USE_BACKEND) return callBackend('master.programs');
+    await mockDelay();
+    return MOCK.programas || [];
+  },
+
+  // ==================== DASHBOARD ====================
+
+  async getDashboardMetrics() {
+    if (API_CONFIG.USE_BACKEND) return callBackend('dashboard.metrics');
+    await mockDelay();
+    return MOCK.dashboard_metrics || {
+      pacientes_activos: 0,
+      tareas_hoy: 0,
+      mensajes_pendientes: 0,
+      incidencias_criticas: 0
+    };
+  }
+};
+
+console.log('GutDoc API v1 — Modo:', API_CONFIG.USE_BACKEND ? 'BACKEND' : 'MOCK');
